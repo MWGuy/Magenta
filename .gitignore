@@ -1,8 +1,7 @@
 # Ignored files
-Release/
-Debug/
+build/
 .vs/
-Magenta.vcxproj.filters
+Magenta.vcxproj.user
 .user
 pch.h
 pch.cpp

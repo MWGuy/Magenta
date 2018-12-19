@@ -56,7 +56,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 	wndClass.hInstance = hInstance;
 	wndClass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
 	wndClass.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wndClass.hbrBackground = (HBRUSH)(WHITE_BRUSH + 1);
+	wndClass.hbrBackground = (HBRUSH)(WHITE_BRUSH);
 	wndClass.lpszMenuName = NULL;
 	wndClass.lpszClassName = TEXT("Magenta");
 
@@ -83,6 +83,9 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 	adaptWindowRect(hWnd);
 
 	ShowWindow(hWnd, iCmdShow);
+
+	Magenta::Window mwindow(hWnd, "");
+
 	UpdateWindow(hWnd);
 
 	while (GetMessage(&msg, NULL, 0, 0)) {
@@ -109,6 +112,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 		return 0;
 	case WM_MOVING:
 	case WM_SIZING:
+	case WM_SIZE:
 		adaptWindowRect(hWnd);
 		break;
 	case WM_LBUTTONDOWN:
