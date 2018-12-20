@@ -1,5 +1,4 @@
 ﻿#include "Magenta.h"
-#include "stdafx.h"
 
 #ifdef _WIN32
 

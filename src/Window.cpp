@@ -1,5 +1,4 @@
 #include "Window.h"
-#include "stdafx.h"
 
 namespace Magenta
 {
@@ -21,6 +20,21 @@ namespace Magenta
 #endif
 	}
 
+	unsigned int Window::height() {
+#ifdef _WIN32
+		RECT rect;
+		GetClientRect(hWnd, (LPRECT)&rect);
+		return rect.bottom - rect.top;
+#endif
+	}
+	unsigned int Window::width() {
+#ifdef _WIN32
+		RECT rect;
+		GetClientRect(hWnd, (LPRECT)&rect);
+		return rect.right - rect.left;
+#endif
+	}
+
 	Layout& Window::layout() {
 #ifdef _WIN32
 		return mLayout;
@@ -32,7 +46,7 @@ namespace Magenta
 		return hWnd;
 	}
 
-	Window::Window(HWND h, std::string layoutjson) : hWnd(h), mLayout(this, layoutjson)
+	Window::Window(HWND h, std::string layoutyml) : hWnd(h), mLayout(this, layoutyml)
 	{
 	}
 

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "stdafx.h"
 #include "Rect.h"
 #include <string>
 
@@ -14,6 +13,7 @@ namespace Magenta
 	public:
 		Layout(Window* owner, std::string jsontext);
 		Layout(Window* owner);
+		~Layout();
 
 		Frame* root();
 

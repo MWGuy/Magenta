@@ -11,5 +11,8 @@ namespace Magenta
 
 		unsigned int height();
 		unsigned int width();
+
+		Rect(unsigned int aLeft, unsigned int aTop, unsigned int aRight, unsigned int aBottom);
+		Rect();
 	};
 }

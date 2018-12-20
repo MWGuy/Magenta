@@ -12,6 +12,6 @@ add_executable(
         src/Layout.h
         src/Widget.cpp
         src/Widget.h
-        src/stdafx.cpp
-        src/stdafx.h
+		src/Rect.cpp
+        src/Rect.h
 )

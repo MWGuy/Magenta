@@ -1,7 +1,5 @@
 #pragma once
 
-#include "stdafx.h"
-
 #ifdef _WIN32
 #include <Windows.h>
 #endif
@@ -21,12 +19,15 @@ namespace Magenta
 		void toggleMaximize();
 		void minimize();
 
+		unsigned int height();
+		unsigned int width();
+
 		Layout& layout();
 
 #ifdef _WIN32
 		HWND handler();
 
-		Window(HWND h, std::string layoutjson);
+		Window(HWND h, std::string layoutyml);
 		Window(HWND h);
 #endif
 	};

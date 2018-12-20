@@ -1,13 +1,15 @@
 #pragma once
 
-#include "stdafx.h"
 #include "Window.h"
 #include "Rect.h"
 #include <vector>
 
+#define EventUnset 0
+
 namespace Magenta
 {
 	typedef unsigned long WidgetId;
+	const unsigned long AutoId = -1;
 
 	enum Position {
 		TopLeft,
@@ -20,13 +22,6 @@ namespace Magenta
 		BottomCenter,
 		BottomRight
 	};
-
-	typedef enum
-	{
-		Normal,
-		WindowCaption
-	}
-	WidgetBehavior;
 
 	class Widget {
 		Layout* pLayout;
@@ -44,19 +39,18 @@ namespace Magenta
 
 		Widget* getMouseTargetObject(unsigned int mx, unsigned int my);
 
-		virtual void draw() {}
+		virtual void draw();
+		void drawChilds();
 
-		Widget(Layout* aLayout, Widget* aParent);
+		Widget(Layout* aLayout, Widget* aParent, unsigned long aId = AutoId);
 
 		// Attributes
 
 		WidgetId id;
-
+		
 		Position position;
 		double relativeHeight, relativeWidth; // %
 		int x, y, width, height;
-
-		WidgetBehavior behavior;
 
 		std::vector<Widget> childs;
 
@@ -64,6 +58,7 @@ namespace Magenta
 
 		void (*onclick)(Widget* self);
 	protected:
+		void(*onclicknotthis)();
 		void(*onrightmouseclick)(Widget* self);
 		void(*onmousedown)(Widget* self);
 		void(*onmousemove)(Widget* self);
@@ -75,8 +70,8 @@ namespace Magenta
 
 	class Frame : public Widget {
 	public:
-		Frame(Layout* aLayout, Widget* aParent);
+		Frame(Layout* aLayout, Widget* aParent, unsigned long aId = AutoId);
 	};
 
-	Frame* createFrame(Widget* owner);
+	Frame* createFrame(Widget* owner, unsigned long aId = AutoId);
 }

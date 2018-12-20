@@ -11,10 +11,19 @@ namespace Magenta
 	}
 
 	unsigned int Rect::height() {
-		return right - left;
+		return bottom - top;
 	}
 
 	unsigned int Rect::width() {
-		return bottom - top;
+		return right - left;
+	}
+
+	Rect::Rect(unsigned int aLeft, unsigned int aTop, unsigned int aRight, unsigned int aBottom)
+		: left(aLeft), top(aTop), right(aRight), bottom(aBottom)
+	{
+	}
+
+	Rect::Rect() : left(0), top(0), right(0), bottom(0)
+	{
 	}
 }
