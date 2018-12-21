@@ -13,6 +13,7 @@ namespace Magenta
 #ifdef _WIN32
 		,view(new Gdiplus::Bitmap(0, 0))
 #endif
+		, mousemoveWidget(0), mousedownWidget(0)
 	{
 		update();
 	}
@@ -21,6 +22,7 @@ namespace Magenta
 #ifdef _WIN32
 		,view(new Gdiplus::Bitmap(0, 0))
 #endif
+		, mousemoveWidget(0), mousedownWidget(0)
 	{
 		update();
 	}
@@ -72,5 +74,75 @@ namespace Magenta
 	void Layout::registerWidget(Widget* self) {
 		//std::map<unsigned long, Widget*>::iterator it = mIdTable.begin();
 		//mIdTable.insert(it, std::pair<unsigned long, Widget*>(self->id, self));
+	}
+
+	Widget* Layout::mouseTargetWidget() {
+		unsigned long x, y;
+#ifdef _WIN32
+		POINT cursor;
+		GetCursorPos(&cursor);
+		RECT wndRect;
+		GetWindowRect(getWindow()->handler(), &wndRect);
+		x = cursor.x - wndRect.left;
+		y = cursor.y - wndRect.top;
+#endif
+		return root()->getMouseTargetObject(x, y);
+	}
+
+	void Layout::executeOnMouseRightButtonUp() {
+		Widget* target = mouseTargetWidget();
+		if (mousedownWidget == target)
+		{
+			if (target->onrightclick != EventUnset)
+				target->onrightclick(target);
+		}
+		mousedownWidget = 0;
+	}
+
+	void Layout::executeOnMouseDown() {
+		Widget* target = mouseTargetWidget();
+		mousedownWidget = target;
+		if (target->onmousedown != EventUnset)
+			target->onmousedown(target);
+	}
+
+	void Layout::executeOnMouseMove() {
+		Widget* target = mouseTargetWidget();
+		if (target == 0)
+			return;
+
+		if (mousemoveWidget != 0) {
+			if (mousemoveWidget != target)
+			{
+				if (mousemoveWidget->onmouseleave != 0)
+					mousemoveWidget->onmouseleave(mousemoveWidget);
+
+				mousemoveWidget = target;
+
+				if (mousemoveWidget->onmouseenter != 0)
+					mousemoveWidget->onmouseenter(mousemoveWidget);
+			}
+		} else {
+			mousemoveWidget = target;
+
+			if (mousemoveWidget->onmouseenter != 0)
+				mousemoveWidget->onmouseenter(mousemoveWidget);
+		}
+
+		if (target->onmousemove != EventUnset)
+			target->onmousemove(target);
+	}
+
+	void Layout::executeOnMouseUp() {
+		Widget* target = mouseTargetWidget();
+		if (target->onmouseup != EventUnset)
+			target->onmouseup(target);
+		
+		if (mousedownWidget == target)
+		{
+			if (target->onclick != EventUnset)
+				target->onclick(target);
+		}
+		mousedownWidget = 0;
 	}
 }

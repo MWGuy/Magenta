@@ -86,7 +86,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 
 	adaptWindowRect(hWnd);
 
-	SetTimer(hWnd, 0, 12, (TIMERPROC)&WndProc);
+	SetTimer(hWnd, 1, 12, (TIMERPROC)&WndProc);
 
 	ShowWindow(hWnd, iCmdShow);
 
@@ -104,6 +104,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 		DispatchMessage(&msg);
 	}
 
+	KillTimer(hWnd, 1);
 	delete mwindow;
 
 	GdiplusShutdown(gdiplusToken);
@@ -132,9 +133,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 		break;
 	case WM_LBUTTONDOWN:
 		mouseDown = true;
+		mwindow->layout().executeOnMouseDown();
+		break;
+	case WM_RBUTTONDOWN:
+		mouseDown = true;
+		mwindow->layout().executeOnMouseDown();
 		break;
 	case WM_LBUTTONUP:
 		mouseDown = false;
+		mwindow->layout().executeOnMouseUp();
+		break;
+	case WM_RBUTTONUP:
+		mouseDown = false;
+		mwindow->layout().executeOnMouseRightButtonUp();
 		break;
 	case WM_TIMER:
 
@@ -222,7 +233,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 		}
 		break;
 	case WM_MOUSEMOVE:
-
+		mwindow->layout().executeOnMouseMove();
 		if (mouseDown)
 			return 0;
 
@@ -297,7 +308,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 VOID updateContext(HDC hdc) {
 	if (mwindow != 0) {
 		mwindow->layout().update();
-		Graphics graphics(hdc);
+		Gdiplus::Graphics graphics(hdc);
 		graphics.DrawImage(mwindow->layout().view, 0, 0);
 	}
 }

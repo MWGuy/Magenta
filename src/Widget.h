@@ -45,6 +45,8 @@ namespace Magenta
 		Widget(Layout* aLayout, Widget* aParent, unsigned long aId = AutoId);
 		~Widget();
 
+		void remove();
+
 		// Attributes
 
 		WidgetId id;
@@ -58,15 +60,12 @@ namespace Magenta
 		// Events
 
 		void (*onclick)(Widget* self);
-	protected:
-		void(*onclicknotthis)();
-		void(*onrightmouseclick)(Widget* self);
+		void(*onrightclick)(Widget* self);
 		void(*onmousedown)(Widget* self);
 		void(*onmousemove)(Widget* self);
-		void(*onmouseover)(Widget* self);
+		void(*onmouseenter)(Widget* self);
+		void(*onmouseleave)(Widget* self);
 		void(*onmouseup)(Widget* self);
-
-		bool mousedown;
 	};
 
 	class Frame : public Widget {
@@ -75,4 +74,6 @@ namespace Magenta
 	};
 
 	Frame* createFrame(Widget* owner, unsigned long aId = AutoId);
+
+	void removeWidget(Widget* self);
 }

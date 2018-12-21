@@ -106,7 +106,7 @@ namespace Magenta
 		   если установить -1, то он станет самым большим числом.
 		*/
 
-		if((int)mx > computedRect().width() || (int)mx > computedRect().height())
+		if((int)mx > computedRect().width() || (int)my > computedRect().height())
 			return 0;
 
 		for (size_t i = 0; i < childs.size(); i++) {
@@ -147,11 +147,11 @@ namespace Magenta
 		width(0), height(0),
 
 		onclick(EventUnset),
-		onclicknotthis(EventUnset),
-		onrightmouseclick(EventUnset),
+		onrightclick(EventUnset),
 		onmousedown(EventUnset),
 		onmousemove(EventUnset),
-		onmouseover(EventUnset),
+		onmouseenter(EventUnset),
+		onmouseleave(EventUnset),
 		onmouseup(EventUnset)
 	{
 		if (id == AutoId)
@@ -164,6 +164,25 @@ namespace Magenta
 		layout()->unregisterWidget(this);
 	}
 
+	void Widget::remove() {
+		if (isRoot())
+			return;
+
+		if (layout()->mousedownWidget == this)
+			layout()->mousedownWidget = 0;
+
+		if (layout()->mousemoveWidget == this)
+			layout()->mousemoveWidget = 0;
+
+		for (size_t i = 0; i < parent()->childs.size(); i++)
+		{
+			if (parent()->childs[i].id = id) {
+				parent()->childs.erase(parent()->childs.begin() + i);
+				break;
+			}
+		}
+	}
+
 	Frame::Frame(Layout* aLayout, Widget* aParent, unsigned long aId)
 		: Widget(aLayout, aParent, aId)
 	{
@@ -172,5 +191,9 @@ namespace Magenta
 	Frame* createFrame(Widget* owner, unsigned long aId) {
 		owner->childs.push_back(Frame(owner->layout(), owner, aId));
 		return (Frame*)&owner->childs[owner->childs.size() - 1];
+	}
+
+	void removeWidget(Widget* self) {
+		self->remove();
 	}
 }

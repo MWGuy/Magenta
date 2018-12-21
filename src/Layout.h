@@ -34,8 +34,17 @@ namespace Magenta
 		void unregisterWidget(Widget* self);
 		void registerWidget(Widget* self);
 
+		void executeOnMouseRightButtonUp();
+		void executeOnMouseDown();
+		void executeOnMouseMove();
+		void executeOnMouseUp();
+
 #ifdef _WIN32
 		Gdiplus::Bitmap* view;
 #endif
+		Widget* mousemoveWidget;
+		Widget* mousedownWidget;
+	protected:
+		Widget* mouseTargetWidget();
 	};
 }
