@@ -10,16 +10,25 @@
 namespace Magenta
 {
 	Layout::Layout(Window* owner, std::string ymltext) : pWindow(owner), pRoot(new Frame(this, 0))
+#ifdef _WIN32
+		,view(new Gdiplus::Bitmap(0, 0))
+#endif
 	{
 		update();
 	}
 
 	Layout::Layout(Window* owner) : pWindow(owner), pRoot(new Frame(this, 0))
+#ifdef _WIN32
+		,view(new Gdiplus::Bitmap(0, 0))
+#endif
 	{
 		update();
 	}
 
 	Layout::~Layout() {
+#ifdef _WIN32
+		delete view;
+#endif
 		delete pRoot;
 	}
 
@@ -32,6 +41,12 @@ namespace Magenta
 	}
 
 	void Layout::update() {
+#ifdef _WIN32
+		unsigned long height = getWindow()->height();
+		unsigned long width = getWindow()->width();
+		delete view;
+		view = new Gdiplus::Bitmap(width, height);
+#endif
 		root()->computeRect();
 		root()->draw();
 	}

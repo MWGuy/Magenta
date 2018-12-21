@@ -106,7 +106,7 @@ namespace Magenta
 		   если установить -1, то он станет самым большим числом.
 		*/
 
-		if(!mx <= computedRect().width() || !mx <= computedRect().height())
+		if((int)mx > computedRect().width() || (int)mx > computedRect().height())
 			return 0;
 
 		for (size_t i = 0; i < childs.size(); i++) {
@@ -120,9 +120,7 @@ namespace Magenta
 	void Widget::draw()
 	{
 #ifdef _WIN32
-		HDC hdc = GetDC(layout()->getWindow()->handler());
-
-		Gdiplus::Graphics graphics(hdc);
+		Gdiplus::Graphics graphics(layout()->view);
 		Gdiplus::Rect rect;
 		rect.X = computedRect().left;
 		rect.Y = computedRect().top;
@@ -133,8 +131,6 @@ namespace Magenta
 		graphics.DrawRectangle(&pen, rect);
 		Gdiplus::SolidBrush br(Gdiplus::Color(40, 0, 0, 255));
 		graphics.FillRectangle(&br, rect);
-
-		ReleaseDC(layout()->getWindow()->handler(), hdc);
 #endif
 		drawChilds();
 	}

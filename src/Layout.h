@@ -1,5 +1,9 @@
 #pragma once
 
+#ifdef _WIN32
+#include <windows.h>
+#include <gdiplus.h>
+#endif
 #include "Rect.h"
 #include <string>
 #include <map>
@@ -29,5 +33,9 @@ namespace Magenta
 
 		void unregisterWidget(Widget* self);
 		void registerWidget(Widget* self);
+
+#ifdef _WIN32
+		Gdiplus::Bitmap* view;
+#endif
 	};
 }

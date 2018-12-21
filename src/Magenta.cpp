@@ -24,6 +24,8 @@ enum WindowTransforming {
 	SizingBottom,
 	Moving
 };
+
+static Magenta::Window* mwindow = 0;
 static WindowTransforming winTransforming = Idle;
 static BOOL mouseDown = false;
 static unsigned int offsetX = 0;
@@ -80,9 +82,11 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 
 	adaptWindowRect(hWnd);
 
+	SetTimer(hWnd, 0, 12, (TIMERPROC)&WndProc);
+
 	ShowWindow(hWnd, iCmdShow);
 
-	auto mwindow = new Magenta::Window(hWnd, "");
+	mwindow = new Magenta::Window(hWnd, "");
 
 #define box1_id 11
 	Magenta::Frame* frame = Magenta::createFrame(mwindow->layout().root(), box1_id);
@@ -90,10 +94,6 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 	frame->relativeWidth = 50;
 	frame->position = Magenta::BottomCenter;
 	frame->y = -40;
-
-	mwindow->layout().update();
-
-	UpdateWindow(hWnd);
 
 	while (GetMessage(&msg, NULL, 0, 0)) {
 		TranslateMessage(&msg);
@@ -106,11 +106,21 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 	return msg.wParam;
 }
 
+VOID updateContext(HDC hdc);
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 	WPARAM wParam, LPARAM lParam)
 {
+	HDC hdc;
+	PAINTSTRUCT ps;
+
 	switch (message)
 	{
+	case WM_PAINT:
+		hdc = BeginPaint(hWnd, &ps);
+		updateContext(hdc);
+		EndPaint(hWnd, &ps);
+		break;
 	case WM_MOVING:
 	case WM_SIZING:
 	case WM_SIZE:
@@ -122,16 +132,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 	case WM_LBUTTONUP:
 		mouseDown = false;
 		break;
-	case WM_MOUSEMOVE:
+	case WM_TIMER:
 
 		if (mouseDown)
 		{
+			POINT p;
+			GetCursorPos(&p);
+			RECT rect;
+			GetWindowRect(hWnd, &rect);
+
 			switch (winTransforming)
 			{
 			case Idle:
 				break;
 			case SizingLeft:
-				
+				MoveWindow(hWnd, p.x - offsetX, p.y - offsetY, rect.right - rect.left, rect.bottom - rect.top, true);
 				break;
 			case SizingLeftTop:
 				
@@ -158,8 +173,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 
 				break;
 			}
-			return 0;
+			adaptWindowRect(hWnd);
 		}
+		break;
+	case WM_MOUSEMOVE:
+
+		if (mouseDown)
+			return 0;
 
 		WORD posX, posY;
 		posX = LOWORD(lParam);
@@ -221,6 +241,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 		return 0;
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
+	}
+}
+
+VOID updateContext(HDC hdc) {
+	if (mwindow != 0) {
+		mwindow->layout().update();
+		Graphics graphics(hdc);
+		graphics.DrawImage(mwindow->layout().view, 0, 0);
 	}
 }
 
