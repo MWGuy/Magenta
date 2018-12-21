@@ -40,6 +40,15 @@ namespace Magenta
 		return mLayout;
 #endif
 	}
+	void Window::alert(std::string message) {
+#ifdef _WIN32
+		HDC hdc = GetDC(hWnd);
+
+		TextOut(hdc, 0, 0, (LPTSTR)message.c_str(), message.size());
+
+		ReleaseDC(hWnd, hdc);
+#endif
+	}
 
 #ifdef _WIN32
 	HWND Window::handler() {

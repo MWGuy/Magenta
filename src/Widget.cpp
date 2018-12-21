@@ -34,8 +34,8 @@ namespace Magenta
 			return;
 		}
 
-		unsigned long w = relativeWidth / 100 * parent()->computedRect().width() - width;
-		unsigned long h = relativeHeight / 100 * parent()->computedRect().height() - height;
+		unsigned long w = relativeWidth / 100 * parent()->computedRect().width() + width;
+		unsigned long h = relativeHeight / 100 * parent()->computedRect().height() + height;
 
 		switch (position)
 		{
@@ -81,6 +81,18 @@ namespace Magenta
 		crect.setWidth(w);
 		crect.setHeight(h);
 
+#ifdef DEBUG
+		std::string str = std::to_string(crect.left);
+		str += ", ";
+		str += std::to_string(crect.top);
+		str += ", ";
+		str += std::to_string(crect.width());
+		str += ", ";
+		str += std::to_string(h);
+
+		layout()->getWindow()->alert(str);
+#endif
+
 		for (size_t i = 0; i < childs.size(); i++)
 			childs[i].computeRect();
 	}
@@ -108,10 +120,7 @@ namespace Magenta
 	void Widget::draw()
 	{
 #ifdef _WIN32
-		HDC          hdc;
-		PAINTSTRUCT  ps;
-
-		hdc = BeginPaint(layout()->getWindow()->handler(), &ps);
+		HDC hdc = GetDC(layout()->getWindow()->handler());
 
 		Gdiplus::Graphics graphics(hdc);
 		Gdiplus::Rect rect;
@@ -119,10 +128,13 @@ namespace Magenta
 		rect.Y = computedRect().top;
 		rect.Width = computedRect().width();
 		rect.Height = computedRect().height();
-		Gdiplus::Pen pen(Gdiplus::Color(0, 0, 255), 1);
+		Gdiplus::Pen pen(Gdiplus::Color(210, 0, 0, 255), 1);
+		pen.SetDashStyle(Gdiplus::DashStyle::DashStyleDash);
 		graphics.DrawRectangle(&pen, rect);
+		Gdiplus::SolidBrush br(Gdiplus::Color(40, 0, 0, 255));
+		graphics.FillRectangle(&br, rect);
 
-		EndPaint(layout()->getWindow()->handler(), &ps);
+		ReleaseDC(layout()->getWindow()->handler(), hdc);
 #endif
 		drawChilds();
 	}
@@ -148,6 +160,12 @@ namespace Magenta
 	{
 		if (id == AutoId)
 			id = rand();
+
+		layout()->registerWidget(this);
+	}
+
+	Widget::~Widget() {
+		layout()->unregisterWidget(this);
 	}
 
 	Frame::Frame(Layout* aLayout, Widget* aParent, unsigned long aId)

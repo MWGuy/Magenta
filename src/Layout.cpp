@@ -27,6 +27,10 @@ namespace Magenta
 		return pRoot;
 	}
 
+	Widget* Layout::findWidgetById(unsigned long id) {
+		return mIdTable.at(id);
+	}
+
 	void Layout::update() {
 		root()->computeRect();
 		root()->draw();
@@ -44,5 +48,14 @@ namespace Magenta
 #else
 		return Rect();
 #endif
+	}
+
+	void Layout::unregisterWidget(Widget* self) {
+		//mIdTable.erase(self->id);
+	}
+
+	void Layout::registerWidget(Widget* self) {
+		//std::map<unsigned long, Widget*>::iterator it = mIdTable.begin();
+		//mIdTable.insert(it, std::pair<unsigned long, Widget*>(self->id, self));
 	}
 }

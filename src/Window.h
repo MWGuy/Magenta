@@ -24,6 +24,9 @@ namespace Magenta
 
 		Layout& layout();
 
+		void alert(std::string message);
+
+
 #ifdef _WIN32
 		HWND handler();
 

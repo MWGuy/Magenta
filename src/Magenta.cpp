@@ -1,4 +1,5 @@
 ﻿#include "Magenta.h"
+#include "Widget.h"
 
 #ifdef _WIN32
 
@@ -6,8 +7,6 @@
 #include <gdiplus.h>
 using namespace Gdiplus;
 #pragma comment (lib,"Gdiplus.lib")
-
-VOID drawImage(HDC hdc);
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
@@ -83,7 +82,16 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 
 	ShowWindow(hWnd, iCmdShow);
 
-	Magenta::Window mwindow(hWnd, "");
+	auto mwindow = new Magenta::Window(hWnd, "");
+
+#define box1_id 11
+	Magenta::Frame* frame = Magenta::createFrame(mwindow->layout().root(), box1_id);
+	frame->height = 120;
+	frame->relativeWidth = 50;
+	frame->position = Magenta::BottomCenter;
+	frame->y = -40;
+
+	mwindow->layout().update();
 
 	UpdateWindow(hWnd);
 
@@ -92,6 +100,8 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 		DispatchMessage(&msg);
 	}
 
+	delete mwindow;
+
 	GdiplusShutdown(gdiplusToken);
 	return msg.wParam;
 }
@@ -99,16 +109,8 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 	WPARAM wParam, LPARAM lParam)
 {
-	HDC          hdc;
-	PAINTSTRUCT  ps;
-
 	switch (message)
 	{
-	case WM_PAINT:
-		hdc = BeginPaint(hWnd, &ps);
-		drawImage(hdc);
-		EndPaint(hWnd, &ps);
-		return 0;
 	case WM_MOVING:
 	case WM_SIZING:
 	case WM_SIZE:
@@ -220,15 +222,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
-}
-
-
-VOID drawImage(HDC hdc)
-{
-	Graphics graphics(hdc);
-
-	Image image(L"resources/Image.png");
-	graphics.DrawImage(&image, 0, 0);
 }
 
 #endif

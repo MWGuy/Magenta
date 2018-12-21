@@ -43,6 +43,7 @@ namespace Magenta
 		void drawChilds();
 
 		Widget(Layout* aLayout, Widget* aParent, unsigned long aId = AutoId);
+		~Widget();
 
 		// Attributes
 
