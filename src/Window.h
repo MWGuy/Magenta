@@ -6,6 +6,9 @@
 #include "Layout.h"
 #include <string>
 
+#define window_min_width 660
+#define window_min_height 420
+
 namespace Magenta
 {
 	class Window {

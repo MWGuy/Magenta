@@ -30,6 +30,10 @@ static WindowTransforming winTransforming = Idle;
 static BOOL mouseDown = false;
 static unsigned int offsetX = 0;
 static unsigned int offsetY = 0;
+static unsigned int initialX = 0;
+static unsigned int initialY = 0;
+static unsigned int initialWidth = 0;
+static unsigned int initialHeight = 0;
 
 VOID adaptWindowRect(HWND hWnd) {
 	RECT newRect;
@@ -141,36 +145,77 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 			RECT rect;
 			GetWindowRect(hWnd, &rect);
 
+			unsigned long posX = p.x - offsetX;
+			unsigned long posY = p.y - offsetY;
+			unsigned long width = 0;
+			unsigned long height = 0;
+
 			switch (winTransforming)
 			{
 			case Idle:
 				break;
 			case SizingLeft:
-				MoveWindow(hWnd, p.x - offsetX, p.y - offsetY, rect.right - rect.left, rect.bottom - rect.top, true);
+				width = initialWidth + initialX - posX;
+				if (width < window_min_width)
+					width = window_min_width;
+				MoveWindow(hWnd, posX, initialY, width, initialHeight, true);
 				break;
 			case SizingLeftTop:
-				
+				width = initialWidth + initialX - posX;
+				if (width < window_min_width)
+					width = window_min_width;
+				height = initialHeight + initialY - posY;
+				if (height < window_min_height)
+					height = window_min_height;
+				MoveWindow(hWnd, posX, posY, width, height, true);
 				break;
 			case SizingLeftBottom:
-				
+				width = initialWidth + initialX - posX;
+				if (width < window_min_width)
+					width = window_min_width;
+				height = initialHeight - initialY + posY;
+				if (height < window_min_height)
+					height = window_min_height;
+				MoveWindow(hWnd, posX, initialY, width, height, true);
 				break;
 			case SizingRight:
-
+				width = initialWidth - initialX + posX;
+				if (width < window_min_width)
+					width = window_min_width;
+				MoveWindow(hWnd, initialX, initialY, width, initialHeight, true);
 				break;
 			case SizingRightTop:
-
+				width = initialWidth - initialX + posX;
+				if (width < window_min_width)
+					width = window_min_width;
+				height = initialHeight + initialY - posY;
+				if (height < window_min_height)
+					height = window_min_height;
+				MoveWindow(hWnd, initialX, posY, width, height, true);
 				break;
 			case SizingRightBottom:
-
+				width = initialWidth - initialX + posX;
+				if (width < window_min_width)
+					width = window_min_width;
+				height = initialHeight - initialY + posY;
+				if (height < window_min_height)
+					height = window_min_height;
+				MoveWindow(hWnd, initialX, initialY, width, height, true);
 				break;
 			case SizingTop:
-
+				height = initialHeight + initialY - posY;
+				if (height < window_min_height)
+					height = window_min_height;
+				MoveWindow(hWnd, initialX, posY, initialWidth, height, true);
 				break;
 			case SizingBottom:
-
+				height = initialHeight - initialY + posY;
+				if (height < window_min_height)
+					height = window_min_height;
+				MoveWindow(hWnd, initialX, initialY, initialWidth, height, true);
 				break;
 			case Moving:
-
+				MoveWindow(hWnd, posX, posY, initialWidth, initialHeight, true);
 				break;
 			}
 			adaptWindowRect(hWnd);
@@ -189,7 +234,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 		offsetY = posY;
 
 		RECT wndRect;
-		GetClientRect(hWnd, (LPRECT)&wndRect);
+		GetWindowRect(hWnd, (LPRECT)&wndRect);
+
+		initialX = wndRect.left;
+		initialY = wndRect.top;
+		initialWidth = wndRect.right - wndRect.left;
+		initialHeight = wndRect.bottom - wndRect.top;
 
 #define BORDER_LEN 4
 
