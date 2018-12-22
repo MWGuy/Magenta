@@ -4,6 +4,36 @@
 
 namespace Magenta
 {
+	void MouseEventHandler::operator+=(MouseEventCallback callback) {
+		sequence.push_back(callback);
+	}
+
+	void MouseEventHandler::operator=(MouseEventCallback callback)
+	{
+		sequence.clear();
+		sequence.push_back(callback);
+	}
+
+	void MouseEventHandler::setWidgetSpecific(MouseEventCallback callback) {
+		widgetSpecificCallbacks.push_back(callback);
+	}
+
+	Widget& MouseEventHandler::assignedWidget() {
+		return *mAssignedWidget;
+	}
+
+	void MouseEventHandler::dispatch() {
+		for (size_t i = 0; i < widgetSpecificCallbacks.size(); i++)
+			widgetSpecificCallbacks[i](mAssignedWidget);
+
+		for (size_t i = 0; i < sequence.size(); i++)
+			sequence[i](mAssignedWidget);
+	}
+
+	MouseEventHandler::MouseEventHandler(Widget* assignedTo) : mAssignedWidget(assignedTo)
+	{
+	}
+
 	Layout* Widget::layout() {
 		return pLayout;
 	}
@@ -153,13 +183,13 @@ namespace Magenta
 		position(TopLeft), height$(0), width$(0), x(0), y(0),
 		width(0), height(0),
 
-		onclick(EventUnset),
-		onrightclick(EventUnset),
-		onmousedown(EventUnset),
-		onmousemove(EventUnset),
-		onmouseenter(EventUnset),
-		onmouseleave(EventUnset),
-		onmouseup(EventUnset)
+		onclick(this),
+		onrightclick(this),
+		onmousedown(this),
+		onmousemove(this),
+		onmouseenter(this),
+		onmouseleave(this),
+		onmouseup(this)
 	{
 		if (id == AutoId)
 			id = rand();
@@ -170,6 +200,10 @@ namespace Magenta
 	Widget::~Widget() {
 		layout()->unregisterWidget(this);
 		for (size_t i = 0; i < childs.size(); i++) {
+			if (layout()->mousedownWidget == childs[i])
+				layout()->mousedownWidget = 0;
+			if (layout()->mousemoveWidget == childs[i])
+				layout()->mousemoveWidget = 0;
 			delete childs[i];
 		}
 	}
@@ -190,7 +224,7 @@ namespace Magenta
 
 		for (size_t i = 0; i < parent()->childs.size(); i++)
 		{
-			if (parent()->childs[i]->id = id) {
+			if (parent()->childs[i] == this) {
 				parent()->childs.erase(parent()->childs.begin() + i);
 				break;
 			}

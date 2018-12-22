@@ -94,8 +94,7 @@ namespace Magenta
 		Widget* target = mouseTargetWidget();
 		if (mousedownWidget == target)
 		{
-			if (target->onrightclick != EventUnset)
-				target->onrightclick(target);
+			target->onrightclick.dispatch();
 		}
 		mousedownWidget = 0;
 	}
@@ -103,8 +102,7 @@ namespace Magenta
 	void Layout::executeOnMouseDown() {
 		Widget* target = mouseTargetWidget();
 		mousedownWidget = target;
-		if (target->onmousedown != EventUnset)
-			target->onmousedown(target);
+		target->onmousedown.dispatch();
 	}
 
 	void Layout::executeOnMouseMove() {
@@ -115,34 +113,29 @@ namespace Magenta
 		if (mousemoveWidget != 0) {
 			if (mousemoveWidget != target)
 			{
-				if (mousemoveWidget->onmouseleave != 0)
-					mousemoveWidget->onmouseleave(mousemoveWidget);
+				mousemoveWidget->onmouseleave.dispatch();
 
 				mousemoveWidget = target;
 
-				if (mousemoveWidget->onmouseenter != 0)
-					mousemoveWidget->onmouseenter(mousemoveWidget);
+				mousemoveWidget->onmouseenter.dispatch();
 			}
 		} else {
 			mousemoveWidget = target;
 
-			if (mousemoveWidget->onmouseenter != 0)
-				mousemoveWidget->onmouseenter(mousemoveWidget);
+			mousemoveWidget->onmouseenter.dispatch();
 		}
 
-		if (target->onmousemove != EventUnset)
-			target->onmousemove(target);
+		target->onmousemove.dispatch();
 	}
 
 	void Layout::executeOnMouseUp() {
 		Widget* target = mouseTargetWidget();
-		if (target->onmouseup != EventUnset)
-			target->onmouseup(target);
+		
+		target->onmouseup.dispatch();
 		
 		if (mousedownWidget == target)
 		{
-			if (target->onclick != EventUnset)
-				target->onclick(target);
+			target->onclick.dispatch();
 		}
 		mousedownWidget = 0;
 	}

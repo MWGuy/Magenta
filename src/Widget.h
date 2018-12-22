@@ -23,6 +23,24 @@ namespace Magenta
 		BottomRight
 	};
 
+	class Widget;
+	typedef void(*MouseEventCallback)(Widget* self);
+	
+	class MouseEventHandler {
+		std::vector<MouseEventCallback> widgetSpecificCallbacks;
+		std::vector<MouseEventCallback> sequence;
+		Widget* mAssignedWidget;
+	public:
+		void operator+=(MouseEventCallback callback);
+		void operator=(MouseEventCallback callback);
+		void setWidgetSpecific(MouseEventCallback callback);
+		Widget& assignedWidget();
+
+		void dispatch();
+
+		MouseEventHandler(Widget* assignedTo);
+	};
+
 	class Widget {
 		Layout* pLayout;
 		Widget* pParent;
@@ -61,13 +79,13 @@ namespace Magenta
 
 		// Events
 
-		void (*onclick)(Widget* self);
-		void(*onrightclick)(Widget* self);
-		void(*onmousedown)(Widget* self);
-		void(*onmousemove)(Widget* self);
-		void(*onmouseenter)(Widget* self);
-		void(*onmouseleave)(Widget* self);
-		void(*onmouseup)(Widget* self);
+		MouseEventHandler onclick;
+		MouseEventHandler onrightclick;
+		MouseEventHandler onmousedown;
+		MouseEventHandler onmousemove;
+		MouseEventHandler onmouseenter;
+		MouseEventHandler onmouseleave;
+		MouseEventHandler onmouseup;
 	};
 
 	// Common widgets
