@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Widget.h"
+#include "../WindowCaption.h"
 
 #define id_caption 0
 #define id_sysbutton_close 101

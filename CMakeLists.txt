@@ -8,6 +8,8 @@ add_executable(
         src/Magenta.h
         src/Window.cpp
         src/Window.h
+		src/WindowCaption.cpp
+        src/WindowCaption.h
         src/Layout.cpp
         src/Layout.h
         src/Widget.cpp

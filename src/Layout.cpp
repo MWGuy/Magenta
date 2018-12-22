@@ -92,6 +92,9 @@ namespace Magenta
 
 	void Layout::executeOnMouseRightButtonUp() {
 		Widget* target = mouseTargetWidget();
+		if (target == 0)
+			return;
+
 		if (mousedownWidget == target)
 		{
 			target->onrightclick.dispatch();
@@ -101,6 +104,9 @@ namespace Magenta
 
 	void Layout::executeOnMouseDown() {
 		Widget* target = mouseTargetWidget();
+		if (target == 0)
+			return;
+
 		mousedownWidget = target;
 		target->onmousedown.dispatch();
 	}
@@ -130,6 +136,8 @@ namespace Magenta
 
 	void Layout::executeOnMouseUp() {
 		Widget* target = mouseTargetWidget();
+		if (target == 0)
+			return;
 		
 		target->onmouseup.dispatch();
 		

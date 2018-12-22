@@ -14,21 +14,8 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 static HRGN winRect;
 
-enum WindowTransforming {
-	Idle,
-	SizingLeft,
-	SizingLeftTop,
-	SizingLeftBottom,
-	SizingRight,
-	SizingRightTop,
-	SizingRightBottom,
-	SizingTop,
-	SizingBottom,
-	Moving
-};
-
 static Magenta::Window* mwindow = 0;
-static WindowTransforming winTransforming = Idle;
+static WindowTransform winTransforming = Idle;
 static BOOL mouseDown = false;
 static unsigned int offsetX = 0;
 static unsigned int offsetY = 0;
@@ -88,11 +75,12 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 
 	adaptWindowRect(hWnd);
 
-	SetTimer(hWnd, 1, 12, (TIMERPROC)&WndProc);
+	SetTimer(hWnd, 1, 1, (TIMERPROC)&WndProc);
 
 	ShowWindow(hWnd, iCmdShow);
 
 	mwindow = new Magenta::Window(hWnd, MagentaForm::AppWindowF);
+	mwindow->setTransformable(&winTransforming);
 
 	while (GetMessage(&msg, NULL, 0, 0)) {
 		TranslateMessage(&msg);

@@ -24,7 +24,7 @@ namespace Magenta
 	};
 
 	class Widget;
-	typedef void(*MouseEventCallback)(Widget* self);
+	typedef void(*MouseEventCallback)(Widget& self);
 	
 	class MouseEventHandler {
 		std::vector<MouseEventCallback> widgetSpecificCallbacks;
@@ -100,5 +100,5 @@ namespace Magenta
 
 	// Common callbacks
 
-	void removeWidget(Widget* self);
+	void removeWidget(Widget& self);
 }

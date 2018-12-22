@@ -9,6 +9,20 @@
 #define window_min_width 660
 #define window_min_height 420
 
+// shared
+enum WindowTransform {
+	Idle,
+	SizingLeft,
+	SizingLeftTop,
+	SizingLeftBottom,
+	SizingRight,
+	SizingRightTop,
+	SizingRightBottom,
+	SizingTop,
+	SizingBottom,
+	Moving
+};
+
 namespace Magenta
 {
 	class Window {
@@ -16,6 +30,8 @@ namespace Magenta
 		HWND hWnd;
 #endif
 		Layout mLayout;
+
+		WindowTransform* mWinTransform;
 
 	public:
 		bool isMaximized();
@@ -29,12 +45,14 @@ namespace Magenta
 
 		void alert(std::string message);
 
+		void setTransformable(WindowTransform* wtransform);
+		void setTransform(WindowTransform state);
 
 #ifdef _WIN32
 		HWND handler();
 
-		Window(HWND h, void(*form)(Widget& view));
-		Window(HWND h);
+		Window(HWND h, void(*form)(Widget& view), WindowTransform* wtransform = 0);
+		Window(HWND h, WindowTransform* wtransform = 0);
 #endif
 	};
 }

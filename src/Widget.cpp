@@ -24,10 +24,10 @@ namespace Magenta
 
 	void MouseEventHandler::dispatch() {
 		for (size_t i = 0; i < widgetSpecificCallbacks.size(); i++)
-			widgetSpecificCallbacks[i](mAssignedWidget);
+			widgetSpecificCallbacks[i](*mAssignedWidget);
 
 		for (size_t i = 0; i < sequence.size(); i++)
-			sequence[i](mAssignedWidget);
+			sequence[i](*mAssignedWidget);
 	}
 
 	MouseEventHandler::MouseEventHandler(Widget* assignedTo) : mAssignedWidget(assignedTo)
@@ -163,10 +163,7 @@ namespace Magenta
 		rect.Y = computedRect().top;
 		rect.Width = computedRect().width();
 		rect.Height = computedRect().height();
-		Gdiplus::Pen pen(Gdiplus::Color(210, 0, 0, 255), 1);
-		pen.SetDashStyle(Gdiplus::DashStyle::DashStyleDash);
-		//graphics.DrawRectangle(&pen, rect);
-		Gdiplus::SolidBrush br(Gdiplus::Color(40, 0, 0, 255));
+		Gdiplus::SolidBrush br(Gdiplus::Color(40, 0, 0, 0));
 		graphics.FillRectangle(&br, rect);
 #endif
 		drawChilds();
@@ -243,7 +240,7 @@ namespace Magenta
 		return (Frame)*owner.childs[owner.childs.size() - 1];
 	}
 
-	void removeWidget(Widget* self) {
-		self->remove();
+	void removeWidget(Widget& self) {
+		self.remove();
 	}
 }

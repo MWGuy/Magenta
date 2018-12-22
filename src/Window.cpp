@@ -50,16 +50,26 @@ namespace Magenta
 #endif
 	}
 
+	void Window::setTransformable(WindowTransform* wtransform) {
+		mWinTransform = wtransform;
+	}
+
+	void Window::setTransform(WindowTransform state) {
+		if(mWinTransform != 0)
+			*mWinTransform = state;
+	}
+
 #ifdef _WIN32
 	HWND Window::handler() {
 		return hWnd;
 	}
 
-	Window::Window(HWND h, void(*form)(Widget& view)) : hWnd(h), mLayout(this, form)
+	Window::Window(HWND h, void(*form)(Widget& view), WindowTransform* wtransform)
+		: hWnd(h), mLayout(this, form), mWinTransform(wtransform)
 	{
 	}
 
-	Window::Window(HWND h) : hWnd(h), mLayout(this)
+	Window::Window(HWND h, WindowTransform* wtransform) : hWnd(h), mLayout(this), mWinTransform(wtransform)
 	{
 	}
 #endif

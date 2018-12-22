@@ -8,7 +8,7 @@ namespace MagentaForm
 	{
 		// Window caption
 
-		Frame caption = createFrame(view, id_caption);
+		WindowCaption caption = createWindowCaption(view, id_caption);
 		caption.width$ = 100;
 		caption.height = 31;
 
