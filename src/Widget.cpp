@@ -30,12 +30,12 @@ namespace Magenta
 			crect.right = layout()->getWindow()->width() - 2;
 			crect.bottom = layout()->getWindow()->height() - 2;
 			for (size_t i = 0; i < childs.size(); i++)
-				childs[i].computeRect();
+				childs[i]->computeRect();
 			return;
 		}
 
-		unsigned long w = relativeWidth / 100 * parent()->computedRect().width() + width;
-		unsigned long h = relativeHeight / 100 * parent()->computedRect().height() + height;
+		unsigned long w = width$ / 100 * parent()->computedRect().width() + width;
+		unsigned long h = height$ / 100 * parent()->computedRect().height() + height;
 
 		switch (position)
 		{
@@ -94,7 +94,7 @@ namespace Magenta
 #endif
 
 		for (size_t i = 0; i < childs.size(); i++)
-			childs[i].computeRect();
+			childs[i]->computeRect();
 	}
 
 	Widget* Widget::getMouseTargetObject(unsigned int mx, unsigned int my)
@@ -110,7 +110,7 @@ namespace Magenta
 			return 0;
 
 		for (size_t i = 0; i < childs.size(); i++) {
-			Widget* candidate = childs[i].getMouseTargetObject(mx, my);
+			Widget* candidate = childs[i]->getMouseTargetObject(mx, my);
 			if (candidate != 0)
 				return candidate;
 		}
@@ -138,12 +138,12 @@ namespace Magenta
 	void Widget::drawChilds()
 	{
 		for (size_t i = 0; i < childs.size(); i++)
-			childs[i].draw();
+			childs[i]->draw();
 	}
 
 	Widget::Widget(Layout* aLayout, Widget* aParent, unsigned long aId)
 		: pLayout(aLayout), pParent(aParent), mComputedRect(), id(aId),
-		position(TopLeft), relativeHeight(0), relativeWidth(0), x(0), y(0),
+		position(TopLeft), height$(0), width$(0), x(0), y(0),
 		width(0), height(0),
 
 		onclick(EventUnset),
@@ -162,6 +162,13 @@ namespace Magenta
 
 	Widget::~Widget() {
 		layout()->unregisterWidget(this);
+		for (size_t i = 0; i < childs.size(); i++) {
+			delete childs[i];
+		}
+	}
+
+	Widget& Widget::operator[](size_t index) {
+		return *childs[index];
 	}
 
 	void Widget::remove() {
@@ -176,11 +183,13 @@ namespace Magenta
 
 		for (size_t i = 0; i < parent()->childs.size(); i++)
 		{
-			if (parent()->childs[i].id = id) {
+			if (parent()->childs[i]->id = id) {
 				parent()->childs.erase(parent()->childs.begin() + i);
 				break;
 			}
 		}
+
+		delete this;
 	}
 
 	Frame_::Frame_(Layout* aLayout, Widget* aParent, unsigned long aId)
@@ -189,8 +198,8 @@ namespace Magenta
 	}
 
 	Frame createFrame(Widget& owner, unsigned long aId) {
-		owner.childs.push_back(Frame_(owner.layout(), &owner, aId));
-		return (Frame)owner.childs[owner.childs.size() - 1];
+		owner.childs.push_back(new Frame_(owner.layout(), &owner, aId));
+		return (Frame)*owner.childs[owner.childs.size() - 1];
 	}
 
 	void removeWidget(Widget* self) {

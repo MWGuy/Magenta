@@ -45,6 +45,8 @@ namespace Magenta
 		Widget(Layout* aLayout, Widget* aParent, unsigned long aId = AutoId);
 		~Widget();
 
+		Widget& operator[](size_t index);
+
 		void remove();
 
 		// Attributes
@@ -52,10 +54,10 @@ namespace Magenta
 		WidgetId id;
 		
 		Position position;
-		double relativeHeight, relativeWidth; // %
+		double height$, width$; // %
 		int x, y, width, height;
 
-		std::vector<Widget> childs;
+		std::vector<Widget*> childs;
 
 		// Events
 
