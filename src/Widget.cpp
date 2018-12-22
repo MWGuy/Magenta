@@ -128,7 +128,7 @@ namespace Magenta
 		rect.Height = computedRect().height();
 		Gdiplus::Pen pen(Gdiplus::Color(210, 0, 0, 255), 1);
 		pen.SetDashStyle(Gdiplus::DashStyle::DashStyleDash);
-		graphics.DrawRectangle(&pen, rect);
+		//graphics.DrawRectangle(&pen, rect);
 		Gdiplus::SolidBrush br(Gdiplus::Color(40, 0, 0, 255));
 		graphics.FillRectangle(&br, rect);
 #endif
