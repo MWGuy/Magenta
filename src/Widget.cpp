@@ -81,6 +81,13 @@ namespace Magenta
 		crect.setWidth(w);
 		crect.setHeight(h);
 
+		// Fix black lines
+		if (width$ == 100 && width == 0 && x == 0)
+			crect.right++;
+
+		if (crect.bottom > layout()->root()->computedRect().bottom - 1)
+			crect.bottom++;
+
 #ifdef DEBUG
 		std::string str = std::to_string(crect.left);
 		str += ", ";

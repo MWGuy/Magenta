@@ -82,7 +82,7 @@ namespace MagentaForm
 		menu.position = CenterRight;
 		menu.width = 21;
 		menu.height = 21;
-		menu.x = -11;
+		menu.x = -14;
 
 		Frame addressbar = createFrame(panel, id_addressbar);
 		addressbar.position = CenterLeft;
