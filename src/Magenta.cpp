@@ -1,6 +1,8 @@
 ﻿#include "Magenta.h"
 #include "Widget.h"
 
+#include "forms/AppWindowF.h"
+
 #ifdef _WIN32
 
 #include <objidl.h>
@@ -90,14 +92,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 
 	ShowWindow(hWnd, iCmdShow);
 
-	mwindow = new Magenta::Window(hWnd, "");
-
-#define box1_id 11
-	Magenta::Frame* frame = Magenta::createFrame(mwindow->layout().root(), box1_id);
-	frame->height = 120;
-	frame->relativeWidth = 50;
-	frame->position = Magenta::BottomCenter;
-	frame->y = -40;
+	mwindow = new Magenta::Window(hWnd, MagentaForm::AppWindowF);
 
 	while (GetMessage(&msg, NULL, 0, 0)) {
 		TranslateMessage(&msg);

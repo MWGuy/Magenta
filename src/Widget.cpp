@@ -183,14 +183,14 @@ namespace Magenta
 		}
 	}
 
-	Frame::Frame(Layout* aLayout, Widget* aParent, unsigned long aId)
+	Frame_::Frame_(Layout* aLayout, Widget* aParent, unsigned long aId)
 		: Widget(aLayout, aParent, aId)
 	{
 	}
 
-	Frame* createFrame(Widget* owner, unsigned long aId) {
-		owner->childs.push_back(Frame(owner->layout(), owner, aId));
-		return (Frame*)&owner->childs[owner->childs.size() - 1];
+	Frame createFrame(Widget& owner, unsigned long aId) {
+		owner.childs.push_back(Frame_(owner.layout(), &owner, aId));
+		return (Frame)owner.childs[owner.childs.size() - 1];
 	}
 
 	void removeWidget(Widget* self) {

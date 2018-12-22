@@ -33,7 +33,7 @@ namespace Magenta
 #ifdef _WIN32
 		HWND handler();
 
-		Window(HWND h, std::string layoutyml);
+		Window(HWND h, void(*form)(Widget& view));
 		Window(HWND h);
 #endif
 	};

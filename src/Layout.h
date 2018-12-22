@@ -8,21 +8,23 @@
 #include <string>
 #include <map>
 
+#define ma_form (Magenta::Widget& view)
+
 namespace Magenta
 {
-	class Frame;
+	class Frame_;
 	class Window;
 	class Widget;
 	class Layout {
 		Window* pWindow;
-		Frame* pRoot;
+		Frame_* pRoot;
 		std::map<unsigned long, Widget*> mIdTable;
 	public:
-		Layout(Window* owner, std::string jsontext);
+		Layout(Window* owner, void(*form)(Widget& view));
 		Layout(Window* owner);
 		~Layout();
 
-		Frame* root();
+		Frame_* root();
 
 		Widget* findWidgetById(unsigned long id);
 

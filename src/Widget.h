@@ -68,12 +68,17 @@ namespace Magenta
 		void(*onmouseup)(Widget* self);
 	};
 
-	class Frame : public Widget {
-	public:
-		Frame(Layout* aLayout, Widget* aParent, unsigned long aId = AutoId);
-	};
+	// Common widgets
 
-	Frame* createFrame(Widget* owner, unsigned long aId = AutoId);
+	class Frame_ : public Widget {
+	public:
+		Frame_(Layout* aLayout, Widget* aParent, unsigned long aId = AutoId);
+	};
+	typedef Frame_& Frame;
+
+	Frame createFrame(Widget& owner, unsigned long aId = AutoId);
+
+	// Common callbacks
 
 	void removeWidget(Widget* self);
 }

@@ -55,7 +55,7 @@ namespace Magenta
 		return hWnd;
 	}
 
-	Window::Window(HWND h, std::string layoutyml) : hWnd(h), mLayout(this, layoutyml)
+	Window::Window(HWND h, void(*form)(Widget& view)) : hWnd(h), mLayout(this, form)
 	{
 	}
 

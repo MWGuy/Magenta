@@ -9,16 +9,17 @@
 
 namespace Magenta
 {
-	Layout::Layout(Window* owner, std::string ymltext) : pWindow(owner), pRoot(new Frame(this, 0))
+	Layout::Layout(Window* owner, void(*form)(Widget& view)) : pWindow(owner), pRoot(new Frame_(this, 0))
 #ifdef _WIN32
 		,view(new Gdiplus::Bitmap(0, 0))
 #endif
 		, mousemoveWidget(0), mousedownWidget(0)
 	{
+		form(*root());
 		update();
 	}
 
-	Layout::Layout(Window* owner) : pWindow(owner), pRoot(new Frame(this, 0))
+	Layout::Layout(Window* owner) : pWindow(owner), pRoot(new Frame_(this, 0))
 #ifdef _WIN32
 		,view(new Gdiplus::Bitmap(0, 0))
 #endif
@@ -34,7 +35,7 @@ namespace Magenta
 		delete pRoot;
 	}
 
-	Frame* Layout::root() {
+	Frame_* Layout::root() {
 		return pRoot;
 	}
 

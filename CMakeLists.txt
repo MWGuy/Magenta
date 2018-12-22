@@ -14,4 +14,6 @@ add_executable(
         src/Widget.h
 		src/Rect.cpp
         src/Rect.h
+		src/forms/AppWindowF.cpp
+        src/forms/AppWindowF.h
 )
