@@ -38,6 +38,8 @@ namespace Magenta
 		void toggleMaximize();
 		void minimize();
 
+		void close();
+
 		unsigned int height();
 		unsigned int width();
 

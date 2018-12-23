@@ -138,20 +138,30 @@ namespace Magenta
 			childs[i]->computeRect();
 	}
 
+	bool compareZIndex(Widget* i1, Widget* i2)
+	{
+		return (i1->zIndex > i2->zIndex);
+	}
+
 	Widget* Widget::getMouseTargetObject(unsigned int mx, unsigned int my)
 	{
-		mx -= computedRect().left;
-		my -= computedRect().top;
+		if (!isRoot()) {
+			mx -= computedRect().left - parent()->computedRect().left;
+			my -= computedRect().top - parent()->computedRect().top;
+		}
 
 		/* Если что, ``mx`` и ``my`` меньше нуля быть не могут, а
 		   если установить -1, то он станет самым большим числом.
 		*/
 
-		if((int)mx > computedRect().width() || (int)my > computedRect().height())
+		if (mx > computedRect().width() || my > computedRect().height())
 			return 0;
 
-		for (size_t i = 0; i < childs.size(); i++) {
-			Widget* candidate = childs[i]->getMouseTargetObject(mx, my);
+		std::vector<Widget*> sequence = childs;
+		std::sort(sequence.begin(), sequence.end(), compareZIndex);
+
+		for (size_t i = 0; i < sequence.size(); i++) {
+			Widget* candidate = sequence[i]->getMouseTargetObject(mx, my);
 			if (candidate != 0)
 				return candidate;
 		}
@@ -170,13 +180,16 @@ namespace Magenta
 
 	void Widget::drawChilds()
 	{
-		for (size_t i = 0; i < childs.size(); i++)
-			childs[i]->draw();
+		std::vector<Widget*> sequence = childs;
+		std::sort(sequence.begin(), sequence.end(), compareZIndex);
+
+		for (size_t i = 0; i < sequence.size(); i++)
+			sequence[i]->draw();
 	}
 
 	Widget::Widget(Layout* aLayout, Widget* aParent, unsigned long aId)
 		: pLayout(aLayout), pParent(aParent), mComputedRect(), id(aId),
-		position(TopLeft), height$(0), width$(0), x(0), y(0),
+		position(TopLeft), height$(0), width$(0), x(0), y(0), zIndex(0),
 		width(0), height(0),
 
 		onclick(this),
@@ -240,6 +253,8 @@ namespace Magenta
 	}
 
 	void removeWidget(Widget& self) {
+		Layout* l = self.layout();
 		self.remove();
+		l->update();
 	}
 }

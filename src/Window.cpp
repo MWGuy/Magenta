@@ -20,6 +20,12 @@ namespace Magenta
 #endif
 	}
 
+	void Window::close() {
+#ifdef _WIN32
+		PostMessage(hWnd, WM_CLOSE, NULL, NULL);
+#endif
+	}
+
 	unsigned int Window::height() {
 #ifdef _WIN32
 		RECT rect;

@@ -260,7 +260,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 				winTransforming = SizingLeft;
 			}
 		}
-		else if (posX > wndRect.right - wndRect.left - BORDER_LEN * 7) {
+		else if (posX > wndRect.right - wndRect.left - BORDER_LEN * 2) {
 			if (posY < BORDER_LEN) {
 				SetCursor(LoadCursor(NULL, IDC_SIZENESW));
 				winTransforming = SizingRightTop;
@@ -278,7 +278,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 			SetCursor(LoadCursor(NULL, IDC_SIZENS));
 			winTransforming = SizingTop;
 		}
-		else if (posY > wndRect.bottom - wndRect.top - BORDER_LEN * 12) {
+		else if (posY > wndRect.bottom - wndRect.top - BORDER_LEN * 2) {
 			SetCursor(LoadCursor(NULL, IDC_SIZENS));
 			winTransforming = SizingBottom;
 		}

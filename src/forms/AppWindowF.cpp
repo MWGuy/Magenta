@@ -4,6 +4,10 @@ using namespace Magenta;
 
 namespace MagentaForm
 {
+	void w_close(Widget& self) {
+		self.layout()->getWindow()->close();
+	}
+
 	void AppWindowF ma_form
 	{
 		// Window caption
@@ -21,6 +25,7 @@ namespace MagentaForm
 		sysbutton_close.width = 21;
 		sysbutton_close.height = 21;
 		sysbutton_close.x = -4;
+		sysbutton_close.onclick = w_close;
 
 		Frame sysbutton_maximize = createFrame(caption, id_sysbutton_maximize);
 		sysbutton_maximize.position = CenterRight;
@@ -53,16 +58,17 @@ namespace MagentaForm
 
 		// Base controls
 
-		Frame panel = createFrame(view, id_panel);
-		panel.width$ = 100;
-		panel.height = 39;
-		panel.y = 31;
-
 		Frame n2view = createFrame(view, id_n2view);
 		n2view.width$ = 100;
 		n2view.height$ = 100;
 		n2view.height = -31;
 		n2view.y = 31;
+
+		Frame panel = createFrame(view, id_panel);
+		panel.width$ = 100;
+		panel.height = 39;
+		panel.zIndex = 1;
+		panel.y = 31;
 
 		// Panel controls
 
@@ -83,6 +89,7 @@ namespace MagentaForm
 		menu.width = 21;
 		menu.height = 21;
 		menu.x = -14;
+		menu.onclick = removeWidget;
 
 		Frame addressbar = createFrame(panel, id_addressbar);
 		addressbar.position = CenterLeft;

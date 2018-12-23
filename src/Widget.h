@@ -78,6 +78,8 @@ namespace Magenta
 		double height$, width$; // %
 		int x, y, width, height;
 
+		long zIndex;
+
 		std::vector<Widget*> childs;
 
 		// Events
