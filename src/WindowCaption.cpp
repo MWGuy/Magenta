@@ -14,16 +14,11 @@ namespace Magenta
 
 	void WindowCaption_::draw() 
 	{
-#ifdef _WIN32
-		Gdiplus::Graphics graphics(layout()->view);
-		Gdiplus::Rect rect;
-		rect.X = computedRect().left;
-		rect.Y = computedRect().top;
-		rect.Width = computedRect().width();
-		rect.Height = computedRect().height();
-		Gdiplus::SolidBrush br(Gdiplus::Color(40, 161, 105, 227));
-		graphics.FillRectangle(&br, rect);
-#endif
+		sf::RectangleShape wrect(sf::Vector2f(computedRect().width(), computedRect().height()));
+		wrect.setPosition(computedRect().left, computedRect().top);
+		wrect.setFillColor(sf::Color(255, 0, 0, 40));
+		canvas().draw(wrect);
+
 		drawChilds();
 	}
 

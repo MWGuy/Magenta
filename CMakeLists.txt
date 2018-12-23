@@ -2,6 +2,12 @@ cmake_minimum_required(VERSION 2.6)
 
 project(Magenta)
 
+#set(SFML_STATIC_LIBRARIES TRUE)
+
+INCLUDE_DIRECTORIES(D:\\sfml\\include\\)
+LINK_DIRECTORIES(D:\\sfml\\lib\\)
+
+
 add_executable(
     Magenta WIN32
         src/Magenta.cpp
@@ -19,3 +25,5 @@ add_executable(
 		src/forms/AppWindowF.cpp
         src/forms/AppWindowF.h
 )
+
+target_link_libraries(Magenta sfml-graphics sfml-window sfml-system)

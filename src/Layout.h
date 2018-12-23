@@ -2,7 +2,7 @@
 
 #ifdef _WIN32
 #include <windows.h>
-#include <gdiplus.h>
+#include "SFML/Graphics.hpp"
 #endif
 #include "Rect.h"
 #include <string>
@@ -41,9 +41,9 @@ namespace Magenta
 		void executeOnMouseMove();
 		void executeOnMouseUp();
 
-#ifdef _WIN32
-		Gdiplus::Bitmap* view;
-#endif
+		sf::Font font;
+		sf::RenderWindow view;
+
 		Widget* mousemoveWidget;
 		Widget* mousedownWidget;
 	protected:

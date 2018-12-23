@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Window.h"
+#include "SFML/Graphics.hpp"
 #include "Rect.h"
 #include <vector>
 
@@ -46,6 +47,8 @@ namespace Magenta
 		Widget* pParent;
 		Rect mComputedRect;
 	public:
+
+		sf::RenderWindow& canvas();
 
 		Layout* layout();
 

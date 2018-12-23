@@ -34,6 +34,10 @@ namespace Magenta
 	{
 	}
 
+	sf::RenderWindow& Widget::canvas() {
+		return layout()->view;
+	}
+
 	Layout* Widget::layout() {
 		return pLayout;
 	}
@@ -156,16 +160,11 @@ namespace Magenta
 
 	void Widget::draw()
 	{
-#ifdef _WIN32
-		Gdiplus::Graphics graphics(layout()->view);
-		Gdiplus::Rect rect;
-		rect.X = computedRect().left;
-		rect.Y = computedRect().top;
-		rect.Width = computedRect().width();
-		rect.Height = computedRect().height();
-		Gdiplus::SolidBrush br(Gdiplus::Color(40, 0, 0, 0));
-		graphics.FillRectangle(&br, rect);
-#endif
+		sf::RectangleShape wrect(sf::Vector2f(computedRect().width(), computedRect().height()));
+		wrect.setPosition(computedRect().left, computedRect().top);
+		wrect.setFillColor(sf::Color(0, 0, 255, 40));
+		canvas().draw(wrect);
+
 		drawChilds();
 	}
 

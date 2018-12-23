@@ -1,5 +1,6 @@
 ﻿#include "Magenta.h"
 #include "Widget.h"
+#include "SFML/Graphics.hpp"
 
 #include "forms/AppWindowF.h"
 
@@ -82,19 +83,27 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 	mwindow = new Magenta::Window(hWnd, MagentaForm::AppWindowF);
 	mwindow->setTransformable(&winTransforming);
 
-	while (GetMessage(&msg, NULL, 0, 0)) {
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
+	msg.message = ~WM_QUIT;
+	while (msg.message != WM_QUIT)
+	{
+		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
 	}
 
 	KillTimer(hWnd, 1);
-	delete mwindow;
+
+	// SFML throws exception with Layout deallocation
+	
+	//delete mwindow; 
 
 	GdiplusShutdown(gdiplusToken);
 	return msg.wParam;
 }
 
-VOID updateContext(HDC hdc);
+VOID updateContext();
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 	WPARAM wParam, LPARAM lParam)
@@ -106,7 +115,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 	{
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
-		updateContext(hdc);
+		updateContext();
 		EndPaint(hWnd, &ps);
 		break;
 	case WM_MOVING:
@@ -288,12 +297,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 	}
 }
 
-VOID updateContext(HDC hdc) {
-	if (mwindow != 0) {
+VOID updateContext() {
+	if (mwindow != 0)
 		mwindow->layout().update();
-		Gdiplus::Graphics graphics(hdc);
-		graphics.DrawImage(mwindow->layout().view, 0, 0);
-	}
 }
 
 #endif
