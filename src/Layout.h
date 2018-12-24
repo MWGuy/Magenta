@@ -41,6 +41,8 @@ namespace Magenta
 		void executeOnMouseMove();
 		void executeOnMouseUp();
 
+		float scale;
+
 		sf::Font font;
 		sf::RenderWindow view;
 

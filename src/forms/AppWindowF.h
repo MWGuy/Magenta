@@ -2,12 +2,14 @@
 
 #include "../Widget.h"
 #include "../WindowCaption.h"
+#include "../TabRegion.h"
 
 #define id_caption 0
+#define id_caption_inner 100
 #define id_sysbutton_close 101
 #define id_sysbutton_maximize 102
 #define id_sysbutton_minimize 103
-#define id_tabzone 1
+#define id_tabregion 1
 #define id_panel 2
 #define id_n2view 3
 #define id_backward 4

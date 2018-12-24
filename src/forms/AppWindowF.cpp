@@ -7,6 +7,12 @@ namespace MagentaForm
 	void w_close(Widget& self) {
 		self.layout()->getWindow()->close();
 	}
+	void w_maximize(Widget& self) {
+		self.layout()->getWindow()->toggleMaximize();
+	}
+	void w_minimize(Widget& self) {
+		self.layout()->getWindow()->minimize();
+	}
 
 	void AppWindowF ma_form
 	{
@@ -14,30 +20,35 @@ namespace MagentaForm
 
 		WindowCaption caption = createWindowCaption(view, id_caption);
 		caption.width$ = 100;
-		caption.height = 31;
+		caption.height = 34;
+		WindowCaptionInner captionInner = createWindowCaptionInner(caption, id_caption_inner);
+		captionInner.width$ = 100;
+		captionInner.height = 31;
 
 		// System buttons
 
 #ifndef _OSX
 
-		Frame sysbutton_close = createFrame(caption, id_sysbutton_close);
+		Frame sysbutton_close = createFrame(captionInner, id_sysbutton_close);
 		sysbutton_close.position = CenterRight;
 		sysbutton_close.width = 21;
 		sysbutton_close.height = 21;
 		sysbutton_close.x = -4;
 		sysbutton_close.onclick = w_close;
 
-		Frame sysbutton_maximize = createFrame(caption, id_sysbutton_maximize);
+		Frame sysbutton_maximize = createFrame(captionInner, id_sysbutton_maximize);
 		sysbutton_maximize.position = CenterRight;
 		sysbutton_maximize.width = 21;
 		sysbutton_maximize.height = 21;
 		sysbutton_maximize.x = -31;
+		sysbutton_maximize.onclick = w_maximize;
 
-		Frame sysbutton_minimize = createFrame(caption, id_sysbutton_minimize);
+		Frame sysbutton_minimize = createFrame(captionInner, id_sysbutton_minimize);
 		sysbutton_minimize.position = CenterRight;
 		sysbutton_minimize.width = 21;
 		sysbutton_minimize.height = 21;
 		sysbutton_minimize.x = -58;
+		sysbutton_minimize.onclick = w_minimize;
 
 #else
 		// macOS system buttons
@@ -45,13 +56,13 @@ namespace MagentaForm
 
 		// Tab zone with tabs
 
-		Frame tabzone = createFrame(caption, id_tabzone);
-		tabzone.position = BottomLeft;
-		tabzone.width$ = 100;
-		tabzone.width = -112;
-		tabzone.height = 28;
+		TabRegion tabregion = createTabRegion(captionInner, id_tabregion);
+		tabregion.position = BottomLeft;
+		tabregion.width$ = 100;
+		tabregion.width = -112;
+		tabregion.height = 28;
 #ifndef _OSX
-		tabzone.x = 12;
+		tabregion.x = 12;
 #else
 		// Indent for macOS system buttons
 #endif

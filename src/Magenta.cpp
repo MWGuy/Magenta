@@ -28,9 +28,15 @@ static unsigned int initialHeight = 0;
 VOID adaptWindowRect(HWND hWnd) {
 	RECT newRect;
 	GetClientRect(hWnd, (LPRECT)&newRect);
-	winRect = CreateRoundRectRgn(newRect.left, newRect.top, newRect.right - newRect.left,
-		newRect.bottom - newRect.top, 12, 12);
-	SetWindowRgn(hWnd, winRect, true);
+	WINDOWPLACEMENT placement;
+	GetWindowPlacement(hWnd, &placement);
+	if (mwindow == 0  || !mwindow->isMaximized())
+	{
+		winRect = CreateRoundRectRgn(newRect.left, newRect.top, newRect.right - newRect.left,
+			newRect.bottom - newRect.top, 12, 12);
+		SetWindowRgn(hWnd, winRect, true);
+	}
+	else SetWindowRgn(hWnd, NULL, true);
 }
 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
@@ -143,6 +149,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 
 		if (mouseDown)
 		{
+			if (mwindow != 0 && mwindow->isMaximized())
+				return 0;
+
 			POINT p;
 			GetCursorPos(&p);
 			RECT rect;
@@ -227,6 +236,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 	case WM_MOUSEMOVE:
 		mwindow->layout().executeOnMouseMove();
 		if (mouseDown)
+			return 0;
+
+		if (mwindow != 0 && mwindow->isMaximized())
 			return 0;
 
 		WORD posX, posY;

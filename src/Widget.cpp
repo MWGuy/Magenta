@@ -68,8 +68,8 @@ namespace Magenta
 			return;
 		}
 
-		unsigned long w = width$ / 100 * parent()->computedRect().width() + width;
-		unsigned long h = height$ / 100 * parent()->computedRect().height() + height;
+		unsigned long w = width$ / 100 * parent()->computedRect().width() + width * layout()->scale;
+		unsigned long h = height$ / 100 * parent()->computedRect().height() + height * layout()->scale;
 
 		switch (position)
 		{
@@ -110,8 +110,8 @@ namespace Magenta
 			crect.top = parent()->computedRect().height() - h;
 			break;
 		}
-		crect.left += x + parent()->computedRect().left;
-		crect.top += y + parent()->computedRect().top;
+		crect.left += x * layout()->scale + parent()->computedRect().left;
+		crect.top += y * layout()->scale + parent()->computedRect().top;
 		crect.setWidth(w);
 		crect.setHeight(h);
 
@@ -170,7 +170,14 @@ namespace Magenta
 
 	void Widget::draw()
 	{
+		// white line fix
+		if (computedRect().width() > canvas().getSize().x - 3)
+			computedRect().right += 1;
+		if (computedRect().bottom > canvas().getSize().y - 3)
+			computedRect().bottom += 2;
+
 		sf::RectangleShape wrect(sf::Vector2f(computedRect().width(), computedRect().height()));
+
 		wrect.setPosition(computedRect().left, computedRect().top);
 		wrect.setFillColor(sf::Color(0, 0, 255, 40));
 		canvas().draw(wrect);
@@ -208,13 +215,25 @@ namespace Magenta
 
 	Widget::~Widget() {
 		layout()->unregisterWidget(this);
-		for (size_t i = 0; i < childs.size(); i++) {
-			if (layout()->mousedownWidget == childs[i])
-				layout()->mousedownWidget = 0;
-			if (layout()->mousemoveWidget == childs[i])
-				layout()->mousemoveWidget = 0;
+		for (size_t i = 0; i < childs.size(); i++)
 			delete childs[i];
+
+		if (layout()->mousedownWidget == this)
+			layout()->mousedownWidget = 0;
+
+		if (layout()->mousemoveWidget == this)
+			layout()->mousemoveWidget = 0;
+
+		if (!isRoot()) {
+			for (size_t i = 0; i < parent()->childs.size(); i++)
+			{
+				if (parent()->childs[i] == this) {
+					parent()->childs.erase(parent()->childs.begin() + i);
+					break;
+				}
+			}
 		}
+		layout()->update();
 	}
 
 	Widget& Widget::operator[](size_t index) {
@@ -224,21 +243,6 @@ namespace Magenta
 	void Widget::remove() {
 		if (isRoot())
 			return;
-
-		if (layout()->mousedownWidget == this)
-			layout()->mousedownWidget = 0;
-
-		if (layout()->mousemoveWidget == this)
-			layout()->mousemoveWidget = 0;
-
-		for (size_t i = 0; i < parent()->childs.size(); i++)
-		{
-			if (parent()->childs[i] == this) {
-				parent()->childs.erase(parent()->childs.begin() + i);
-				break;
-			}
-		}
-
 		delete this;
 	}
 
@@ -253,8 +257,6 @@ namespace Magenta
 	}
 
 	void removeWidget(Widget& self) {
-		Layout* l = self.layout();
 		self.remove();
-		l->update();
 	}
 }

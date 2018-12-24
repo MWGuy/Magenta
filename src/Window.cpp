@@ -2,15 +2,30 @@
 
 namespace Magenta
 {
-	bool Window::isMaximized() {
-#ifdef _WIN32
-		return GetClassLong(hWnd, -26) == 3;
-#endif
+	bool Window::isMaximized() const {
+		return mMaximized;
 	}
 
 	void Window::toggleMaximize() {
 #ifdef _WIN32
-		isMaximized() ? SetClassLong(hWnd, -26, 1) : SetClassLong(hWnd, -26, 3);
+		if(isMaximized())
+		{
+			mMaximized = false;
+			MoveWindow(hWnd, savedX, savedY, savedWidth, savedHeight, true);
+		}
+		else
+		{
+			mMaximized = true;
+			RECT rect;
+			GetWindowRect(hWnd, (LPRECT)&rect);
+			savedX = rect.left;
+			savedY = rect.top;
+			savedWidth = rect.right - rect.left;
+			savedHeight = rect.bottom - rect.top;
+			RECT workArea;
+			SystemParametersInfo(SPI_GETWORKAREA, 0, &workArea, 0); // deprecated
+			MoveWindow(hWnd, 0, 0, workArea.right, workArea.bottom, true);
+		}
 #endif
 	}
 
@@ -71,11 +86,13 @@ namespace Magenta
 	}
 
 	Window::Window(HWND h, void(*form)(Widget& view), WindowTransform* wtransform)
-		: hWnd(h), mLayout(this, form), mWinTransform(wtransform)
+		: hWnd(h), mMaximized(false), savedX(0), savedY(0), savedHeight(0), savedWidth(0),
+		mLayout(this, form), mWinTransform(wtransform)
 	{
 	}
 
-	Window::Window(HWND h, WindowTransform* wtransform) : hWnd(h), mLayout(this), mWinTransform(wtransform)
+	Window::Window(HWND h, WindowTransform* wtransform) : hWnd(h), mMaximized(false), savedX(0), savedY(0),
+		savedHeight(0), savedWidth(0), mLayout(this), mWinTransform(wtransform)
 	{
 	}
 #endif

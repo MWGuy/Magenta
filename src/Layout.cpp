@@ -10,7 +10,7 @@
 namespace Magenta
 {
 	Layout::Layout(Window* owner, void(*form)(Widget& view)) : pWindow(owner), pRoot(new Frame_(this, 0)),
-		view(owner->handler(), sf::ContextSettings(24, 8, 8)),
+		scale(1.0), view(owner->handler(), sf::ContextSettings(24, 8, 8)),
 		mousemoveWidget(0), mousedownWidget(0)
 	{
 		if (!font.loadFromFile("resources/fonts/Arimo-Regular.ttf")) {
@@ -22,9 +22,13 @@ namespace Magenta
 	}
 
 	Layout::Layout(Window* owner) : pWindow(owner), pRoot(new Frame_(this, 0)),
-		view(owner->handler(), sf::ContextSettings(24, 8, 8)),
+		scale(1.0), view(owner->handler(), sf::ContextSettings(24, 8, 8)),
 		mousemoveWidget(0), mousedownWidget(0)
 	{
+		if (!font.loadFromFile("resources/fonts/Arimo-Regular.ttf")) {
+			MessageBox(0, "Missing font resources", "Magenta", MB_OK);
+		}
+
 		update();
 	}
 

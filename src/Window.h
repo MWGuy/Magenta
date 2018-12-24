@@ -28,13 +28,18 @@ namespace Magenta
 	class Window {
 #ifdef _WIN32
 		HWND hWnd;
+		bool mMaximized;
+
+		unsigned int savedX;
+		unsigned int savedY;
+		unsigned int savedHeight;
+		unsigned int savedWidth;
 #endif
 		Layout mLayout;
-
 		WindowTransform* mWinTransform;
 
 	public:
-		bool isMaximized();
+		bool isMaximized() const;
 		void toggleMaximize();
 		void minimize();
 
