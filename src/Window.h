@@ -27,6 +27,7 @@ namespace Magenta
 {
 	class Window {
 #ifdef _WIN32
+		HWND hInner;
 		HWND hWnd;
 		bool mMaximized;
 
@@ -58,8 +59,8 @@ namespace Magenta
 #ifdef _WIN32
 		HWND handler();
 
-		Window(HWND h, void(*form)(Widget& view), WindowTransform* wtransform = 0);
-		Window(HWND h, WindowTransform* wtransform = 0);
+		Window(HWND i, HWND h, void(*form)(Widget& view), WindowTransform* wtransform = 0);
+		Window(HWND i, HWND h, WindowTransform* wtransform = 0);
 #endif
 	};
 }

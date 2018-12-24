@@ -11,20 +11,27 @@ namespace Magenta
 		if(isMaximized())
 		{
 			mMaximized = false;
-			MoveWindow(hWnd, savedX, savedY, savedWidth, savedHeight, true);
+			MoveWindow(hInner, savedX, savedY, savedWidth, savedHeight, true);
+
+			// Update hWnd
+			RECT rect;
+			GetWindowRect(hWnd, (LPRECT)&rect);
+			MoveWindow(hWnd, rect.left, rect.top, rect.right - rect.left + 1, rect.bottom - rect.top, true);
+			MoveWindow(hWnd, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, true);
 		}
 		else
 		{
 			mMaximized = true;
 			RECT rect;
-			GetWindowRect(hWnd, (LPRECT)&rect);
+			GetWindowRect(hInner, (LPRECT)&rect);
 			savedX = rect.left;
 			savedY = rect.top;
 			savedWidth = rect.right - rect.left;
 			savedHeight = rect.bottom - rect.top;
 			RECT workArea;
 			SystemParametersInfo(SPI_GETWORKAREA, 0, &workArea, 0); // deprecated
-			MoveWindow(hWnd, 0, 0, workArea.right, workArea.bottom, true);
+			MoveWindow(hInner, 0, 0, workArea.right, workArea.bottom, true);
+			SetWindowRgn(hInner, NULL, true);
 		}
 #endif
 	}
@@ -44,14 +51,14 @@ namespace Magenta
 	unsigned int Window::height() {
 #ifdef _WIN32
 		RECT rect;
-		GetClientRect(hWnd, (LPRECT)&rect);
+		GetClientRect(hInner, (LPRECT)&rect);
 		return rect.bottom - rect.top;
 #endif
 	}
 	unsigned int Window::width() {
 #ifdef _WIN32
 		RECT rect;
-		GetClientRect(hWnd, (LPRECT)&rect);
+		GetClientRect(hInner, (LPRECT)&rect);
 		return rect.right - rect.left;
 #endif
 	}
@@ -82,16 +89,16 @@ namespace Magenta
 
 #ifdef _WIN32
 	HWND Window::handler() {
-		return hWnd;
+		return hInner;
 	}
 
-	Window::Window(HWND h, void(*form)(Widget& view), WindowTransform* wtransform)
-		: hWnd(h), mMaximized(false), savedX(0), savedY(0), savedHeight(0), savedWidth(0),
+	Window::Window(HWND i, HWND h, void(*form)(Widget& view), WindowTransform* wtransform)
+		: hInner(i), hWnd(h), mMaximized(false), savedX(0), savedY(0), savedHeight(0), savedWidth(0),
 		mLayout(this, form), mWinTransform(wtransform)
 	{
 	}
 
-	Window::Window(HWND h, WindowTransform* wtransform) : hWnd(h), mMaximized(false), savedX(0), savedY(0),
+	Window::Window(HWND i, HWND h, WindowTransform* wtransform) : hInner(i), hWnd(h), mMaximized(false), savedX(0), savedY(0),
 		savedHeight(0), savedWidth(0), mLayout(this), mWinTransform(wtransform)
 	{
 	}
