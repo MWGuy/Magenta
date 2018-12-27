@@ -25,22 +25,26 @@ namespace Magenta
 	};
 
 	class Widget;
-	typedef void(*MouseEventCallback)(Widget& self);
-	
-	class MouseEventHandler {
-		std::vector<MouseEventCallback> widgetSpecificCallbacks;
-		std::vector<MouseEventCallback> sequence;
+
+	typedef void(*EventCallback)(Widget& self);
+
+	class EventHandler {
+		std::vector<EventCallback> widgetSpecificCallbacks;
+		std::vector<EventCallback> sequence;
 		Widget* mAssignedWidget;
 	public:
-		void operator+=(MouseEventCallback callback);
-		void operator=(MouseEventCallback callback);
-		void setWidgetSpecific(MouseEventCallback callback);
+		void operator+=(EventCallback callback);
+		void operator=(EventCallback callback);
+		void setWidgetSpecific(EventCallback callback);
 		Widget& assignedWidget();
 
 		void dispatch();
 
-		MouseEventHandler(Widget* assignedTo);
+		EventHandler(Widget* assignedTo);
 	};
+
+	typedef EventHandler MouseEventHandler;
+	typedef EventHandler WidgetEventHandler;
 
 	class Widget {
 		Layout* pLayout;
@@ -70,6 +74,18 @@ namespace Magenta
 
 		void remove();
 
+		// Visibility
+
+	protected:
+		bool visible;
+
+	public:
+
+		void hide();
+		void show();
+		void toggleVisibility();
+		bool isVisible() const;
+
 		// Attributes
 
 		WidgetId id;
@@ -91,6 +107,8 @@ namespace Magenta
 		MouseEventHandler onmouseenter;
 		MouseEventHandler onmouseleave;
 		MouseEventHandler onmouseup;
+		WidgetEventHandler onshow;
+		WidgetEventHandler onhide;
 	};
 
 	// Common widgets

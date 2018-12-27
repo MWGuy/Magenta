@@ -6,11 +6,6 @@
 
 #ifdef _WIN32
 
-#include <objidl.h>
-#include <gdiplus.h>
-using namespace Gdiplus;
-#pragma comment (lib,"Gdiplus.lib")
-
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 LRESULT CALLBACK InnProc(HWND, UINT, WPARAM, LPARAM);
 
@@ -58,10 +53,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 	MSG                 msg;
 	WNDCLASS            wndClass;
 	WNDCLASS            innClass;
-	GdiplusStartupInput gdiplusStartupInput;
 	ULONG_PTR           gdiplusToken;
-
-	GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
 
 	wndClass.style = CS_HREDRAW | CS_VREDRAW;
 	wndClass.lpfnWndProc = WndProc;
@@ -105,6 +97,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 	lStyle &= ~(WS_CAPTION | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU);
 	SetWindowLong(hWnd, GWL_STYLE, lStyle);
 
+	// Apply transparent style
 	MoveWindow(hWnd, 200, 200, 800, 580, false);
 
 	SetTimer(hWnd, 1, 1, (TIMERPROC)&WndProc);
@@ -115,6 +108,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 	lStyle &= ~(WS_CAPTION | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU);
 	SetWindowLong(hInner, GWL_STYLE, lStyle);
 
+	// Hide inner
 	MoveWindow(hInner, 10000, 0, 0, 0, false);
 
 	mwindow = new Magenta::Window(hInner, hWnd, MagentaForm::AppWindowF);
@@ -149,7 +143,6 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 	
 	//delete mwindow; 
 
-	GdiplusShutdown(gdiplusToken);
 	return msg.wParam;
 }
 

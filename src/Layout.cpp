@@ -41,8 +41,21 @@ namespace Magenta
 		return pRoot;
 	}
 
+	Widget* findWidgetByIdRecursive(Widget* current, unsigned long id) {
+		if (current->id == id)
+			return current;
+
+		for (unsigned i = 0; i < current->childs.size(); i++)
+		{
+			Widget* candidate = findWidgetByIdRecursive(current->childs[i], id);
+			if (candidate != 0)
+				return candidate;
+		}
+		return 0;
+	}
+
 	Widget* Layout::findWidgetById(unsigned long id) {
-		return mIdTable.at(id);
+		return findWidgetByIdRecursive(root(), id);
 	}
 
 	void Layout::update() {
@@ -74,12 +87,11 @@ namespace Magenta
 	}
 
 	void Layout::unregisterWidget(Widget* self) {
-		//mIdTable.erase(self->id);
+		
 	}
 
 	void Layout::registerWidget(Widget* self) {
-		//std::map<unsigned long, Widget*>::iterator it = mIdTable.begin();
-		//mIdTable.insert(it, std::pair<unsigned long, Widget*>(self->id, self));
+		
 	}
 
 	Widget* Layout::mouseTargetWidget() {

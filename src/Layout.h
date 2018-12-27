@@ -6,7 +6,6 @@
 #endif
 #include "Rect.h"
 #include <string>
-#include <map>
 
 #define ma_form (Magenta::Widget& view)
 
@@ -18,7 +17,6 @@ namespace Magenta
 	class Layout {
 		Window* pWindow;
 		Frame_* pRoot;
-		std::map<unsigned long, Widget*> mIdTable;
 	public:
 		Layout(Window* owner, void(*form)(Widget& view));
 		Layout(Window* owner);

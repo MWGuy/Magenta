@@ -4,25 +4,25 @@
 
 namespace Magenta
 {
-	void MouseEventHandler::operator+=(MouseEventCallback callback) {
+	void EventHandler::operator+=(EventCallback callback) {
 		sequence.push_back(callback);
 	}
 
-	void MouseEventHandler::operator=(MouseEventCallback callback)
+	void EventHandler::operator=(EventCallback callback)
 	{
 		sequence.clear();
 		sequence.push_back(callback);
 	}
 
-	void MouseEventHandler::setWidgetSpecific(MouseEventCallback callback) {
+	void EventHandler::setWidgetSpecific(EventCallback callback) {
 		widgetSpecificCallbacks.push_back(callback);
 	}
 
-	Widget& MouseEventHandler::assignedWidget() {
+	Widget& EventHandler::assignedWidget() {
 		return *mAssignedWidget;
 	}
 
-	void MouseEventHandler::dispatch() {
+	void EventHandler::dispatch() {
 		for (size_t i = 0; i < widgetSpecificCallbacks.size(); i++)
 			widgetSpecificCallbacks[i](*mAssignedWidget);
 
@@ -30,7 +30,7 @@ namespace Magenta
 			sequence[i](*mAssignedWidget);
 	}
 
-	MouseEventHandler::MouseEventHandler(Widget* assignedTo) : mAssignedWidget(assignedTo)
+	EventHandler::EventHandler(Widget* assignedTo) : mAssignedWidget(assignedTo)
 	{
 	}
 
@@ -145,6 +145,9 @@ namespace Magenta
 
 	Widget* Widget::getMouseTargetObject(unsigned int mx, unsigned int my)
 	{
+		if (!isVisible())
+			return 0;
+
 		if (!isRoot()) {
 			mx -= computedRect().left - parent()->computedRect().left;
 			my -= computedRect().top - parent()->computedRect().top;
@@ -191,11 +194,14 @@ namespace Magenta
 		std::sort(sequence.begin(), sequence.end(), compareZIndex);
 
 		for (size_t i = 0; i < sequence.size(); i++)
-			sequence[i]->draw();
+		{
+			if(sequence[i]->isVisible())
+				sequence[i]->draw();
+		}
 	}
 
 	Widget::Widget(Layout* aLayout, Widget* aParent, unsigned long aId)
-		: pLayout(aLayout), pParent(aParent), mComputedRect(), id(aId),
+		: pLayout(aLayout), pParent(aParent), mComputedRect(), visible(true), id(aId),
 		position(TopLeft), height$(0), width$(0), x(0), y(0), zIndex(0),
 		width(0), height(0),
 
@@ -205,7 +211,9 @@ namespace Magenta
 		onmousemove(this),
 		onmouseenter(this),
 		onmouseleave(this),
-		onmouseup(this)
+		onmouseup(this),
+		onshow(this),
+		onhide(this)
 	{
 		if (id == AutoId)
 			id = rand();
@@ -240,10 +248,31 @@ namespace Magenta
 		return *childs[index];
 	}
 
+
 	void Widget::remove() {
 		if (isRoot())
 			return;
 		delete this;
+	}
+
+	void Widget::hide() {
+		visible = false;
+		onhide.dispatch();
+		layout()->update();
+	}
+	void Widget::show() {
+		visible = true;
+		onshow.dispatch();
+		layout()->update();
+	}
+
+	void Widget::toggleVisibility()
+	{
+		visible = !visible;
+	}
+
+	bool Widget::isVisible() const {
+		return visible;
 	}
 
 	Frame_::Frame_(Layout* aLayout, Widget* aParent, unsigned long aId)
