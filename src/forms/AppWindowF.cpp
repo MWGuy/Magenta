@@ -20,7 +20,7 @@ namespace MagentaForm
 
 		WindowCaption caption = createWindowCaption(view, id_caption);
 		caption.width$ = 100;
-		caption.height = 34;
+		caption.height = 35;
 		WindowCaptionInner captionInner = createWindowCaptionInner(caption, id_caption_inner);
 		captionInner.width$ = 100;
 		captionInner.height = 31;
@@ -29,21 +29,25 @@ namespace MagentaForm
 
 #ifndef _OSX
 
-		Frame sysbutton_close = createFrame(captionInner, id_sysbutton_close);
+		ActionButton sysbutton_close= createActionButton(captionInner, id_sysbutton_close,
+			Figure("resources/sysbuttons.png", 0, 0, 21, 21),  // normal
+			Figure("resources/sysbuttons.png", 21, 0, 21, 21), // hover
+			Figure("resources/sysbuttons.png", 42, 0, 21, 21)  // press
+		);
 		sysbutton_close.position = CenterRight;
 		sysbutton_close.width = 21;
 		sysbutton_close.height = 21;
 		sysbutton_close.x = -4;
 		sysbutton_close.onclick = w_close;
 
-		Frame sysbutton_maximize = createFrame(captionInner, id_sysbutton_maximize);
+		ActionButton sysbutton_maximize = createActionButton(captionInner, id_sysbutton_maximize);
 		sysbutton_maximize.position = CenterRight;
 		sysbutton_maximize.width = 21;
 		sysbutton_maximize.height = 21;
 		sysbutton_maximize.x = -31;
 		sysbutton_maximize.onclick = w_maximize;
 
-		Frame sysbutton_minimize = createFrame(captionInner, id_sysbutton_minimize);
+		ActionButton sysbutton_minimize = createActionButton(captionInner, id_sysbutton_minimize);
 		sysbutton_minimize.position = CenterRight;
 		sysbutton_minimize.width = 21;
 		sysbutton_minimize.height = 21;
@@ -75,7 +79,7 @@ namespace MagentaForm
 		n2view.height = -31;
 		n2view.y = 31;
 
-		Frame panel = createFrame(view, id_panel);
+		TopPanel panel = createTopPanel(view, id_panel);
 		panel.width$ = 100;
 		panel.height = 39;
 		panel.zIndex = 1;

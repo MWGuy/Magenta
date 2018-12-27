@@ -1,11 +1,10 @@
 #pragma once
 
 #include "Window.h"
+#include "EventHandler.h"
 #include "SFML/Graphics.hpp"
 #include "Rect.h"
 #include <vector>
-
-#define EventUnset 0
 
 namespace Magenta
 {
@@ -24,28 +23,6 @@ namespace Magenta
 		BottomRight
 	};
 
-	class Widget;
-
-	typedef void(*EventCallback)(Widget& self);
-
-	class EventHandler {
-		std::vector<EventCallback> widgetSpecificCallbacks;
-		std::vector<EventCallback> sequence;
-		Widget* mAssignedWidget;
-	public:
-		void operator+=(EventCallback callback);
-		void operator=(EventCallback callback);
-		void setWidgetSpecific(EventCallback callback);
-		Widget& assignedWidget();
-
-		void dispatch();
-
-		EventHandler(Widget* assignedTo);
-	};
-
-	typedef EventHandler MouseEventHandler;
-	typedef EventHandler WidgetEventHandler;
-
 	class Widget {
 		Layout* pLayout;
 		Widget* pParent;
@@ -53,6 +30,7 @@ namespace Magenta
 	public:
 
 		sf::RenderWindow& canvas();
+		void update();
 
 		Layout* layout();
 

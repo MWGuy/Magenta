@@ -6,13 +6,13 @@ namespace Magenta
 		unsigned int left, top, right, bottom;
 
 		// Сначала установите ``left`` и ``top``
-		void setHeight(unsigned int len);
-		void setWidth(unsigned int len);
+		void setHeight(double len);
+		void setWidth(double len);
 
-		unsigned int height();
-		unsigned int width();
+		double height();
+		double width();
 
-		Rect(unsigned int aLeft, unsigned int aTop, unsigned int aRight, unsigned int aBottom);
+		Rect(double aLeft, double aTop, double aRight, double aBottom);
 		Rect();
 	};
 }

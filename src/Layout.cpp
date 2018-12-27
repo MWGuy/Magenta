@@ -120,6 +120,7 @@ namespace Magenta
 	}
 
 	void Layout::executeOnMouseDown() {
+		onmousedown.dispatchAll();
 		Widget* target = mouseTargetWidget();
 		if (target == 0)
 			return;
@@ -152,6 +153,7 @@ namespace Magenta
 	}
 
 	void Layout::executeOnMouseUp() {
+		onmouseup.dispatchAll();
 		Widget* target = mouseTargetWidget();
 		if (target == 0)
 			return;

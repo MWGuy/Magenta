@@ -2,23 +2,23 @@
 
 namespace Magenta
 {
-	void Rect::setHeight(unsigned int len) {
+	void Rect::setHeight(double len) {
 		bottom = top + len;
 	}
 
-	void Rect::setWidth(unsigned int len) {
+	void Rect::setWidth(double len) {
 		right = left + len;
 	}
 
-	unsigned int Rect::height() {
+	double Rect::height() {
 		return bottom - top;
 	}
 
-	unsigned int Rect::width() {
+	double Rect::width() {
 		return right - left;
 	}
 
-	Rect::Rect(unsigned int aLeft, unsigned int aTop, unsigned int aRight, unsigned int aBottom)
+	Rect::Rect(double aLeft, double aTop, double aRight, double aBottom)
 		: left(aLeft), top(aTop), right(aRight), bottom(aBottom)
 	{
 	}

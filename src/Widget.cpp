@@ -4,38 +4,12 @@
 
 namespace Magenta
 {
-	void EventHandler::operator+=(EventCallback callback) {
-		sequence.push_back(callback);
-	}
-
-	void EventHandler::operator=(EventCallback callback)
-	{
-		sequence.clear();
-		sequence.push_back(callback);
-	}
-
-	void EventHandler::setWidgetSpecific(EventCallback callback) {
-		widgetSpecificCallbacks.push_back(callback);
-	}
-
-	Widget& EventHandler::assignedWidget() {
-		return *mAssignedWidget;
-	}
-
-	void EventHandler::dispatch() {
-		for (size_t i = 0; i < widgetSpecificCallbacks.size(); i++)
-			widgetSpecificCallbacks[i](*mAssignedWidget);
-
-		for (size_t i = 0; i < sequence.size(); i++)
-			sequence[i](*mAssignedWidget);
-	}
-
-	EventHandler::EventHandler(Widget* assignedTo) : mAssignedWidget(assignedTo)
-	{
-	}
-
 	sf::RenderWindow& Widget::canvas() {
 		return layout()->view;
+	}
+
+	void Widget::update() {
+		pLayout->update();
 	}
 
 	Layout* Widget::layout() {
@@ -68,8 +42,8 @@ namespace Magenta
 			return;
 		}
 
-		unsigned long w = width$ / 100 * parent()->computedRect().width() + width * layout()->scale;
-		unsigned long h = height$ / 100 * parent()->computedRect().height() + height * layout()->scale;
+		double w = width$ / 100 * parent()->computedRect().width() + width * layout()->scale;
+		double h = height$ / 100 * parent()->computedRect().height() + height * layout()->scale;
 
 		switch (position)
 		{
@@ -138,9 +112,12 @@ namespace Magenta
 			childs[i]->computeRect();
 	}
 
-	bool compareZIndex(Widget* i1, Widget* i2)
-	{
+	bool compareZIndex(Widget* i1, Widget* i2) {
 		return (i1->zIndex > i2->zIndex);
+	}
+
+	bool compareZIndex_firstly_low(Widget* i1, Widget* i2) {
+		return (i1->zIndex < i2->zIndex);
 	}
 
 	Widget* Widget::getMouseTargetObject(unsigned int mx, unsigned int my)
@@ -191,7 +168,7 @@ namespace Magenta
 	void Widget::drawChilds()
 	{
 		std::vector<Widget*> sequence = childs;
-		std::sort(sequence.begin(), sequence.end(), compareZIndex);
+		std::sort(sequence.begin(), sequence.end(), compareZIndex_firstly_low);
 
 		for (size_t i = 0; i < sequence.size(); i++)
 		{

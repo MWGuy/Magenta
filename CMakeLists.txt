@@ -10,6 +10,12 @@ LINK_DIRECTORIES(D:\\sfml\\lib\\)
 
 add_executable(
     Magenta WIN32
+		src/ActionButton.cpp
+        src/ActionButton.h
+		src/EventHandler.cpp
+		src/EventHandler.h
+		src/Figure.cpp
+        src/Figure.h
         src/Magenta.cpp
         src/Magenta.h
         src/Window.cpp
@@ -22,8 +28,12 @@ add_executable(
         src/Widget.h
 		src/Rect.cpp
         src/Rect.h
+		src/Menu.h
+		src/Menu.cpp
 		src/TabRegion.cpp
         src/TabRegion.h
+		src/TopPanel.h
+		src/TopPanel.cpp
 		src/forms/AppWindowF.cpp
         src/forms/AppWindowF.h
 )

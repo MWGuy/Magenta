@@ -5,6 +5,7 @@
 #include "SFML/Graphics.hpp"
 #endif
 #include "Rect.h"
+#include "EventHandler.h"
 #include <string>
 
 #define ma_form (Magenta::Widget& view)
@@ -46,6 +47,9 @@ namespace Magenta
 
 		Widget* mousemoveWidget;
 		Widget* mousedownWidget;
+
+		SharedEventHandler onmousedown;
+		SharedEventHandler onmouseup;
 	protected:
 		Widget* mouseTargetWidget();
 	};
