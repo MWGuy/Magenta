@@ -18,6 +18,7 @@ namespace Magenta
 			GetWindowRect(hWnd, (LPRECT)&rect);
 			MoveWindow(hWnd, rect.left, rect.top, rect.right - rect.left + 1, rect.bottom - rect.top, true);
 			MoveWindow(hWnd, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, true);
+			layout().onwindowrestore.dispatchAll();
 		}
 		else
 		{
@@ -32,6 +33,7 @@ namespace Magenta
 			SystemParametersInfo(SPI_GETWORKAREA, 0, &workArea, 0); // deprecated
 			MoveWindow(hInner, 0, 0, workArea.right, workArea.bottom, true);
 			SetWindowRgn(hInner, NULL, true);
+			layout().onwindowmaximize.dispatchAll();
 		}
 #endif
 	}

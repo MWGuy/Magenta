@@ -9,9 +9,35 @@ namespace MagentaForm
 	}
 	void w_maximize(Widget& self) {
 		self.layout()->getWindow()->toggleMaximize();
+		
+		if (self.layout()->getWindow()->isMaximized())
+		{
+			ActionButton_* ab = (ActionButton_*)self.layout()->findWidgetById(id_sysbutton_maximize);
+			if (ab == 0)
+				return;
+			ab->figNormal = Figure("resources/sysbuttons.png", 0, 42, 21, 21);
+			ab->figHover = Figure("resources/sysbuttons.png", 21, 42, 21, 21);
+			ab->figPress = Figure("resources/sysbuttons.png", 42, 42, 21, 21);
+		}
+		else
+		{
+			ActionButton_* ab = (ActionButton_*)self.layout()->findWidgetById(id_sysbutton_maximize);
+			if (ab == 0)
+				return;
+			ab->figNormal = Figure("resources/sysbuttons.png", 0, 21, 21, 21);
+			ab->figHover = Figure("resources/sysbuttons.png", 21, 21, 21, 21);
+			ab->figPress = Figure("resources/sysbuttons.png", 42, 21, 21, 21);
+		}
 	}
 	void w_minimize(Widget& self) {
 		self.layout()->getWindow()->minimize();
+
+		ActionButton_* ab = (ActionButton_*)self.layout()->findWidgetById(id_sysbutton_maximize);
+		if (ab == 0)
+			return;
+		ab->figNormal = Figure("resources/sysbuttons.png", 0, 42, 21, 21);
+		ab->figHover = Figure("resources/sysbuttons.png", 21, 21, 21, 21);
+		ab->figPress = Figure("resources/sysbuttons.png", 42, 21, 21, 21);
 	}
 
 	void AppWindowF ma_form
@@ -29,7 +55,7 @@ namespace MagentaForm
 
 #ifndef _OSX
 
-		ActionButton sysbutton_close= createActionButton(captionInner, id_sysbutton_close,
+		ActionButton sysbutton_close = createActionButton(captionInner, id_sysbutton_close,
 			Figure("resources/sysbuttons.png", 0, 0, 21, 21),  // normal
 			Figure("resources/sysbuttons.png", 21, 0, 21, 21), // hover
 			Figure("resources/sysbuttons.png", 42, 0, 21, 21)  // press
@@ -40,14 +66,22 @@ namespace MagentaForm
 		sysbutton_close.x = -4;
 		sysbutton_close.onclick = w_close;
 
-		ActionButton sysbutton_maximize = createActionButton(captionInner, id_sysbutton_maximize);
+		ActionButton sysbutton_maximize = createActionButton(captionInner, id_sysbutton_maximize,
+			Figure("resources/sysbuttons.png", 0, 21, 21, 21),  // normal
+			Figure("resources/sysbuttons.png", 21, 21, 21, 21), // hover
+			Figure("resources/sysbuttons.png", 42, 21, 21, 21)  // press
+		);
 		sysbutton_maximize.position = CenterRight;
 		sysbutton_maximize.width = 21;
 		sysbutton_maximize.height = 21;
 		sysbutton_maximize.x = -31;
 		sysbutton_maximize.onclick = w_maximize;
 
-		ActionButton sysbutton_minimize = createActionButton(captionInner, id_sysbutton_minimize);
+		ActionButton sysbutton_minimize = createActionButton(captionInner, id_sysbutton_minimize,
+			Figure("resources/sysbuttons.png", 0, 63, 21, 21),  // normal
+			Figure("resources/sysbuttons.png", 21, 63, 21, 21), // hover
+			Figure("resources/sysbuttons.png", 42, 63, 21, 21)  // press
+		);
 		sysbutton_minimize.position = CenterRight;
 		sysbutton_minimize.width = 21;
 		sysbutton_minimize.height = 21;

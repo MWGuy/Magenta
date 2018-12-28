@@ -1,7 +1,11 @@
 # Ignored files
-build/
 .vs/
 Magenta.vcxproj.user
 .user
 pch.h
 pch.cpp
+
+build/*
+!build/Release_x64/
+build/Release_x64/*
+!build/Release_x64/resources/

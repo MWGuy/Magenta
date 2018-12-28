@@ -13,7 +13,7 @@ namespace Magenta
 		scale(1.0), view(owner->handler(), sf::ContextSettings(24, 8, 8)),
 		mousemoveWidget(0), mousedownWidget(0)
 	{
-		if (!font.loadFromFile("resources/fonts/Arimo-Regular.ttf")) {
+		if (!font.loadFromFile("resources/fonts/third-party/Arimo-Regular.ttf")) {
 			MessageBox(0, "Missing font resources", "Magenta", MB_OK);
 		}
 
@@ -25,7 +25,7 @@ namespace Magenta
 		scale(1.0), view(owner->handler(), sf::ContextSettings(24, 8, 8)),
 		mousemoveWidget(0), mousedownWidget(0)
 	{
-		if (!font.loadFromFile("resources/fonts/Arimo-Regular.ttf")) {
+		if (!font.loadFromFile("resources/fonts/third-party/Arimo-Regular.ttf")) {
 			MessageBox(0, "Missing font resources", "Magenta", MB_OK);
 		}
 
@@ -132,7 +132,16 @@ namespace Magenta
 	void Layout::executeOnMouseMove() {
 		Widget* target = mouseTargetWidget();
 		if (target == 0)
+		{
+			if (mousemoveWidget != 0) {
+				if (mousemoveWidget != target)
+				{
+					mousemoveWidget->onmouseleave.dispatch();
+					mousemoveWidget = 0;
+				}
+			}
 			return;
+		}
 
 		if (mousemoveWidget != 0) {
 			if (mousemoveWidget != target)

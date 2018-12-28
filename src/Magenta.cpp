@@ -12,6 +12,7 @@ LRESULT CALLBACK InnProc(HWND, UINT, WPARAM, LPARAM);
 static HRGN winRect = CreateRoundRectRgn(0, 0, 0, 0, 0, 0);
 
 static HWND hInner = 0;
+static BOOL cursorInsideInner = false;
 
 static Magenta::Window* mwindow = 0;
 static WindowTransform winTransforming = Idle;
@@ -116,6 +117,8 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 
 	ShowWindow(hWnd, iCmdShow);
 
+	SetTimer(hInner, 2, 100, (TIMERPROC)&InnProc);
+
 	RECT workArea;
 	SystemParametersInfo(SPI_GETWORKAREA, 0, &workArea, 0);
 	MoveWindow(hWnd, workArea.right/2 - 400, workArea.bottom / 2 - 290, 800, 580, true);
@@ -134,6 +137,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 		}
 	}
 
+	KillTimer(hInner, 2);
 	KillTimer(hWnd, 1);
 
 	SetWindowRgn(hInner, NULL, true);
@@ -363,6 +367,20 @@ LRESULT CALLBACK InnProc(HWND hWnd, UINT message,
 		mwindow->layout().executeOnMouseRightButtonUp();
 		winTransforming = Idle;
 		mouseDown = false;
+		break;
+	case WM_TIMER:
+		RECT wndRect;
+		GetWindowRect(hWnd, (LPRECT)&wndRect);
+		POINT p;
+		GetCursorPos(&p);
+		bool isInside;
+		isInside = PtInRect(&wndRect, p);
+		if (isInside == cursorInsideInner)
+			cursorInsideInner = 2;
+		else cursorInsideInner = isInside;
+
+		if(cursorInsideInner == FALSE)
+			mwindow->layout().executeOnMouseMove();
 		break;
 	case WM_MOUSEMOVE:
 		mwindow->layout().executeOnMouseMove();
