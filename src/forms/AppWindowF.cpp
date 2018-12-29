@@ -137,7 +137,7 @@ namespace MagentaForm
 		menu.width = 21;
 		menu.height = 21;
 		menu.x = -14;
-		//menu.onclick = removeWidget;
+		menu.onclick = removeWidget;
 
 		Frame addressbar = createFrame(panel, id_addressbar);
 		addressbar.position = CenterLeft;

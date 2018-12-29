@@ -111,8 +111,11 @@ namespace Magenta
 
 	void ThreadCircle(ValueAnimation_* animation)
 	{
-		while (animation->timerState == Working)
+		while (true)
 		{
+			if (animation->timerState != Working)
+				break;
+
 			for (size_t i = 0; i < animation->values.size(); i++)
 				animation->values[i].setValue(animation);
 			std::this_thread::sleep_for(std::chrono::milliseconds(VALUE_ANIMATION_FREQURENCY));
@@ -132,8 +135,8 @@ namespace Magenta
 	ValueAnimation_::~ValueAnimation_()
 	{
 		timerState = PendingToTerminate;
-		while (timerState != Terminated)
-		{ // Wait for safe thread stopping
-		}
+		//while (timerState != Terminated)
+		//{ // Wait for safe thread stopping
+		//}
 	}
 }
