@@ -141,9 +141,11 @@ namespace MagentaForm
 		menu.x = -14;
 		menu.onclick = removeWidget;
 
-		ValueAnimation animation = menu.createValueAnimation(2);
-		animation.append(AnimatedValue(menu.y, 10, 200, 2));
-		animation.append(AnimatedValue(menu.x, -100, -10, 1, 1));
+		ValueAnimation animation = menu.createValueAnimation(0.25);
+		animation.append(AnimatedValue(menu.y, 0, 40, 0.25));
+		animation.append(AnimatedValue(menu.x, -14, -10, 0.25));
+		animation.append(AnimatedValue(menu.width, 21, 29, 0.25));
+		animation.append(AnimatedValue(menu.height, 21, 29, 0.25));
 		animation.direction = AnimationDirection::ForwardReverse;
 		animation.repeat = true;
 		animation.play();

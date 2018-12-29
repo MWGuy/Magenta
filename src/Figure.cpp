@@ -5,17 +5,20 @@ namespace Magenta
 	Figure::Figure(std::string url, size_t offsetX, size_t offsetY, size_t width, size_t height)
 		: mType(FigureType::None)
 	{
-		visual.setOrigin(sf::Vector2f(0, 0));
+		texture.setRepeated(false);
+		texture.setSmooth(true);
 		set(url, offsetX, offsetY, width, height);
 	}
 	Figure::Figure(std::string url) : mType(FigureType::None)
 	{
-		visual.setOrigin(sf::Vector2f(0, 0));
+		texture.setRepeated(false);
+		texture.setSmooth(true);
 		set(url);
 	}
 	Figure::Figure() : mType(FigureType::None)
 	{
-		visual.setOrigin(sf::Vector2f(0, 0));
+		texture.setRepeated(false);
+		texture.setSmooth(true);
 	}
 
 	void Figure::set(std::string url, size_t offsetX, size_t offsetY, size_t width, size_t height)
@@ -48,7 +51,8 @@ namespace Magenta
 		{
 		case Raster:
 			visual.setPosition(rect.left, rect.top);
-			visual.setTexture(texture);
+			visual.setSize(sf::Vector2f(rect.width(), rect.height()));
+			visual.setTexture(&texture);
 			layout->view.draw(visual);
 			break;
 		case None:

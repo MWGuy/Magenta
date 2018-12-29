@@ -3,10 +3,6 @@
 #include "Layout.h"
 #include <future>
 
-#ifdef _WIN32
-#include <windows.h>
-#endif
-
 namespace Magenta
 {
 	void AnimatedValue::setValue(ValueAnimation_* animation)
@@ -37,7 +33,7 @@ namespace Magenta
 		if (direction == AnimationDirection::Forward
 			|| direction == AnimationDirection::ForwardReverse)
 		{
-			position += 0.001 * speed;
+			position += 0.01 * speed;
 			if (position > duration)
 			{
 				if (repeat)
@@ -51,7 +47,7 @@ namespace Magenta
 			}
 		} else
 		{
-			position -= 0.001 * speed;
+			position -= 0.01 * speed;
 			if (position < 0)
 			{
 				if (repeat)
@@ -118,9 +114,7 @@ namespace Magenta
 		{
 			for (size_t i = 0; i < animation->values.size(); i++)
 				animation->values[i].setValue(animation);
-#ifdef _WIN32 
-			Sleep(VALUE_ANIMATION_FREQURENCY);
-#endif
+			std::this_thread::sleep_for(std::chrono::milliseconds(VALUE_ANIMATION_FREQURENCY));
 			animation->nextFrame();
 		}
 		animation->timerState = Terminated;

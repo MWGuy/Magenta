@@ -3,7 +3,7 @@
 #include <vector>
 #include <future>
 
-#define VALUE_ANIMATION_FREQURENCY 1 // ms
+#define VALUE_ANIMATION_FREQURENCY 10 // ms
 
 namespace Magenta
 {

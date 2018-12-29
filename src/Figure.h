@@ -13,7 +13,7 @@ namespace Magenta
 
 	class Figure
 	{
-		sf::Sprite visual;
+		sf::RectangleShape visual;
 		sf::Texture texture;
 		FigureType mType;
 	public:
