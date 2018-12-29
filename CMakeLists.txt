@@ -34,8 +34,12 @@ add_executable(
         src/TabRegion.h
 		src/TopPanel.h
 		src/TopPanel.cpp
+		src/ValueAnimation.cpp
+        src/ValueAnimation.h
 		src/forms/AppWindowF.cpp
         src/forms/AppWindowF.h
+		src/shared/NewtooView.cpp
+        src/shared/NewtooView.h
 )
 
 target_link_libraries(Magenta sfml-graphics sfml-window sfml-system)

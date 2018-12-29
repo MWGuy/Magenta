@@ -108,6 +108,7 @@ namespace Magenta
 	}
 
 	void Layout::executeOnMouseRightButtonUp() {
+		onmouserightbuttonup.dispatchAll();
 		Widget* target = mouseTargetWidget();
 		if (target == 0)
 			return;

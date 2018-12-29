@@ -46,7 +46,7 @@ namespace Magenta
 		void drawChilds();
 
 		Widget(Layout* aLayout, Widget* aParent, unsigned long aId = AutoId);
-		~Widget();
+		virtual ~Widget();
 
 		Widget& operator[](size_t index);
 

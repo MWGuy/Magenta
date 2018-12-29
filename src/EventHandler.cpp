@@ -1,4 +1,5 @@
 #include "EventHandler.h"
+#include "Widget.h"
 
 namespace Magenta
 {

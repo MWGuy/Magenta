@@ -10,23 +10,20 @@ namespace MagentaForm
 	void w_maximize(Widget& self) {
 		self.layout()->getWindow()->toggleMaximize();
 		
+		ActionButton_& ab = (ActionButton_&)self;
+		ab.state = 0;
+
 		if (self.layout()->getWindow()->isMaximized())
 		{
-			ActionButton_* ab = (ActionButton_*)self.layout()->findWidgetById(id_sysbutton_maximize);
-			if (ab == 0)
-				return;
-			ab->figNormal = Figure("resources/sysbuttons.png", 0, 42, 21, 21);
-			ab->figHover = Figure("resources/sysbuttons.png", 21, 42, 21, 21);
-			ab->figPress = Figure("resources/sysbuttons.png", 42, 42, 21, 21);
+			ab.figNormal = Figure("resources/sysbuttons.png", 0, 42, 21, 21);
+			ab.figHover = Figure("resources/sysbuttons.png", 21, 42, 21, 21);
+			ab.figPress = Figure("resources/sysbuttons.png", 42, 42, 21, 21);
 		}
 		else
 		{
-			ActionButton_* ab = (ActionButton_*)self.layout()->findWidgetById(id_sysbutton_maximize);
-			if (ab == 0)
-				return;
-			ab->figNormal = Figure("resources/sysbuttons.png", 0, 21, 21, 21);
-			ab->figHover = Figure("resources/sysbuttons.png", 21, 21, 21, 21);
-			ab->figPress = Figure("resources/sysbuttons.png", 42, 21, 21, 21);
+			ab.figNormal = Figure("resources/sysbuttons.png", 0, 21, 21, 21);
+			ab.figHover = Figure("resources/sysbuttons.png", 21, 21, 21, 21);
+			ab.figPress = Figure("resources/sysbuttons.png", 42, 21, 21, 21);
 		}
 	}
 	void w_minimize(Widget& self) {
@@ -107,7 +104,7 @@ namespace MagentaForm
 
 		// Base controls
 
-		Frame n2view = createFrame(view, id_n2view);
+		NewtooView n2view = createNewtooView(view, id_n2view);
 		n2view.width$ = 100;
 		n2view.height$ = 100;
 		n2view.height = -31;
@@ -133,7 +130,11 @@ namespace MagentaForm
 		forward.height = 21;
 		forward.x = 38;
 
-		Frame menu = createFrame(panel, id_menu);
+		ActionButton menu = createActionButton(panel, id_menu,
+			Figure("resources/panel.png", 0, 0, 21, 21),
+			Figure("resources/panel.png", 21, 0, 21, 21),
+			Figure("resources/panel.png", 42, 0, 21, 21)
+		);
 		menu.position = CenterRight;
 		menu.width = 21;
 		menu.height = 21;

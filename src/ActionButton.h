@@ -12,7 +12,7 @@ namespace Magenta
 		ActionButton_(Layout* aLayout, Widget* aParent, Figure normal = Figure(),
 			Figure hover = Figure(), Figure press = Figure());
 
-		ActionButton_::~ActionButton_();
+		~ActionButton_() override;
 
 		short state;
 

@@ -5,6 +5,9 @@
 #include "../TabRegion.h"
 #include "../TopPanel.h"
 #include "../ActionButton.h"
+#include "../ValueAnimation.h"
+
+#include "../shared/NewtooView.h"
 
 #define id_caption 0
 #define id_caption_inner 100
