@@ -105,7 +105,8 @@ namespace Magenta
 
 	void ValueAnimation_::stop() {
 		pause();
-		toBeginning();
+		if(!stayAtEnd)
+			toBeginning();
 	}
 
 	void ThreadCircle(ValueAnimation_* animation)
@@ -122,7 +123,7 @@ namespace Magenta
 
 	ValueAnimation_::ValueAnimation_(Seconds durationS)
 		: mPaused(true), timerState(Working), duration(durationS), position(0), direction(AnimationDirection::Forward),
-		repeat(false), speed(1.0f)
+		repeat(false), stayAtEnd(false), speed(1.0f)
 	{
 		auto thr = std::thread(ThreadCircle, this);
 		thr.detach();

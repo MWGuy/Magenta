@@ -6,6 +6,7 @@
 #include "../TopPanel.h"
 #include "../ActionButton.h"
 #include "../ValueAnimation.h"
+#include "../PanelButton.h"
 
 #include "../shared/NewtooView.h"
 

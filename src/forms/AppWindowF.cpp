@@ -130,25 +130,14 @@ namespace MagentaForm
 		forward.height = 21;
 		forward.x = 38;
 
-		ActionButton menu = createActionButton(panel, id_menu,
-			Figure("resources/panel.png", 0, 0, 21, 21),
-			Figure("resources/panel.png", 21, 0, 21, 21),
-			Figure("resources/panel.png", 42, 0, 21, 21)
+		PanelButton menu = createPanelButton(panel, id_menu,
+			Figure("resources/panel.png", 0, 0, 75, 75)
 		);
 		menu.position = CenterRight;
 		menu.width = 21;
 		menu.height = 21;
 		menu.x = -14;
-		menu.onclick = removeWidget;
-
-		ValueAnimation animation = menu.createValueAnimation(0.25);
-		animation.append(AnimatedValue(menu.y, 0, 40, 0.25));
-		animation.append(AnimatedValue(menu.x, -14, -10, 0.25));
-		animation.append(AnimatedValue(menu.width, 21, 29, 0.25));
-		animation.append(AnimatedValue(menu.height, 21, 29, 0.25));
-		animation.direction = AnimationDirection::ForwardReverse;
-		animation.repeat = true;
-		animation.play();
+		//menu.onclick = removeWidget;
 
 		Frame addressbar = createFrame(panel, id_addressbar);
 		addressbar.position = CenterLeft;

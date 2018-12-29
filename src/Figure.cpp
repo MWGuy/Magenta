@@ -3,19 +3,19 @@
 namespace Magenta
 {
 	Figure::Figure(std::string url, size_t offsetX, size_t offsetY, size_t width, size_t height)
-		: mType(FigureType::None)
+		: mType(FigureType::None), scale(1.0f)
 	{
 		texture.setRepeated(false);
 		texture.setSmooth(true);
 		set(url, offsetX, offsetY, width, height);
 	}
-	Figure::Figure(std::string url) : mType(FigureType::None)
+	Figure::Figure(std::string url) : mType(FigureType::None), scale(1.0f)
 	{
 		texture.setRepeated(false);
 		texture.setSmooth(true);
 		set(url);
 	}
-	Figure::Figure() : mType(FigureType::None)
+	Figure::Figure() : mType(FigureType::None), scale(1.0f)
 	{
 		texture.setRepeated(false);
 		texture.setSmooth(true);
@@ -41,6 +41,10 @@ namespace Magenta
 		mType = FigureType::None;
 	}
 
+	sf::RectangleShape& Figure::shape() {
+		return visual;
+	}
+
 	FigureType Figure::type() const {
 		return mType;
 	}
@@ -50,7 +54,9 @@ namespace Magenta
 		switch (mType)
 		{
 		case Raster:
-			visual.setPosition(rect.left, rect.top);
+			visual.setOrigin(rect.width() / 2, rect.height() / 2);
+			visual.setScale(sf::Vector2f(scale, scale));
+			visual.setPosition(rect.left + visual.getOrigin().x, rect.top + visual.getOrigin().y);
 			visual.setSize(sf::Vector2f(rect.width(), rect.height()));
 			visual.setTexture(&texture);
 			layout->view.draw(visual);

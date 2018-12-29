@@ -2,14 +2,14 @@
 
 namespace Magenta
 {
-	void MEnter(Widget& self) {
+	void ActionButton_MEnter(Widget& self) {
 		ActionButton& ab = (ActionButton&)self;
 		ab.isMouseEntered = true;
 		ab.state = 1;
 		ab.update();
 	}
 
-	void MLeave(Widget& self) {
+	void ActionButton_MLeave(Widget& self) {
 		ActionButton& ab = (ActionButton&)self;
 		ab.isMouseEntered = false;
 		if(ab.state != 2)
@@ -17,27 +17,27 @@ namespace Magenta
 		ab.update();
 	}
 
-	void MDown(Widget& self) {
+	void ActionButton_MDown(Widget& self) {
 		ActionButton& ab = (ActionButton&)self;
 		ab.state = 2;
 		ab.update();
 	}
 
-	void MUp(Widget& self) {
+	void ActionButton_MUp(Widget& self) {
 		ActionButton& ab = (ActionButton&)self;
 		ab.state = ab.isMouseEntered ? 1 : 0;
 		ab.update();
 	}
 
 	ActionButton_::ActionButton_(Layout* aLayout, Widget* aParent, unsigned long aId, Figure normal, Figure hover, Figure press)
-		:Widget(aLayout, aParent, aId), callbackMouseUp(MUp, *this), isMouseEntered(false), state(0),
+		:Widget(aLayout, aParent, aId), callbackMouseUp(ActionButton_MUp, *this), isMouseEntered(false), state(0),
 		figNormal(normal), figHover(hover), figPress(press)
 	{
 		connect();
 	}
 
 	ActionButton_::ActionButton_(Layout* aLayout, Widget* aParent, Figure normal, Figure hover, Figure press)
-		: Widget(aLayout, aParent, AutoId), callbackMouseUp(MUp, *this), isMouseEntered(false), state(0),
+		: Widget(aLayout, aParent, AutoId), callbackMouseUp(ActionButton_MUp, *this), isMouseEntered(false), state(0),
 		figNormal(normal), figHover(hover), figPress(press)
 	{
 		connect();
@@ -79,9 +79,9 @@ namespace Magenta
 
 	void ActionButton_::connect()
 	{
-		onmouseenter.setWidgetSpecific(MEnter);
-		onmouseleave.setWidgetSpecific(MLeave);
-		onmousedown.setWidgetSpecific(MDown);
+		onmouseenter.setWidgetSpecific(ActionButton_MEnter);
+		onmouseleave.setWidgetSpecific(ActionButton_MLeave);
+		onmousedown.setWidgetSpecific(ActionButton_MDown);
 		layout()->onmouseup += &callbackMouseUp;
 	}
 

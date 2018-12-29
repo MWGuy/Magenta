@@ -44,7 +44,7 @@ namespace Magenta
 
 		Seconds duration, position;
 		AnimationDirection direction;
-		bool repeat;
+		bool repeat, stayAtEnd;
 		double speed;
 
 		void nextFrame();

@@ -30,6 +30,8 @@ add_executable(
         src/Rect.h
 		src/Menu.h
 		src/Menu.cpp
+		src/PanelButton.h
+		src/PanelButton.cpp
 		src/TabRegion.cpp
         src/TabRegion.h
 		src/TopPanel.h

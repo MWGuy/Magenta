@@ -25,6 +25,10 @@ namespace Magenta
 		void set(std::string url);
 		void clear();
 
+		sf::RectangleShape& shape();
+
+		double scale;
+
 		FigureType type() const;
 
 		void draw(Layout* layout, Rect& rect);

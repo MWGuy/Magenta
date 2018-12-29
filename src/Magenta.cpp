@@ -28,6 +28,9 @@ VOID adaptWindowRect(HWND hWnd) {
 	if (hInner == 0)
 		return;
 
+	if (IsIconic(hWnd))
+		return;
+
 	RECT mwRect;
 	GetWindowRect(hWnd, (LPRECT)&mwRect);
 
