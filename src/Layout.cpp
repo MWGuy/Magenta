@@ -59,6 +59,10 @@ namespace Magenta
 	}
 
 	void Layout::update() {
+		
+	}
+
+	void Layout::forceUpdate() {
 		unsigned long height = getWindow()->height();
 		unsigned long width = getWindow()->width();
 

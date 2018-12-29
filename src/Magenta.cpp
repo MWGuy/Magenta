@@ -179,6 +179,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 		mouseDown = false;
 		break;
 	case WM_TIMER:
+		mwindow->layout().executeOnMouseMove();
+		updateContext();
 		if (mouseDown)
 		{
 			if (mwindow != 0 && mwindow->isMaximized())
@@ -379,12 +381,10 @@ LRESULT CALLBACK InnProc(HWND hWnd, UINT message,
 			cursorInsideInner = 2;
 		else cursorInsideInner = isInside;
 
-		if(cursorInsideInner == FALSE)
-			mwindow->layout().executeOnMouseMove();
+		//if(cursorInsideInner == FALSE)
+		//	mwindow->layout().executeOnMouseMove();
 		break;
 	case WM_MOUSEMOVE:
-		mwindow->layout().executeOnMouseMove();
-
 		if (mouseDown)
 			return 0;
 
@@ -404,7 +404,7 @@ LRESULT CALLBACK InnProc(HWND hWnd, UINT message,
 
 VOID updateContext() {
 	if (mwindow != 0)
-		mwindow->layout().update();
+		mwindow->layout().forceUpdate();
 }
 
 #endif

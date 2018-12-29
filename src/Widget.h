@@ -4,6 +4,7 @@
 #include "EventHandler.h"
 #include "SFML/Graphics.hpp"
 #include "Rect.h"
+#include "ValueAnimation.h"
 #include <vector>
 
 namespace Magenta
@@ -52,6 +53,12 @@ namespace Magenta
 
 		void remove();
 
+	protected:
+		std::vector<void*> dependency;
+
+	public:
+		ValueAnimation createValueAnimation(Seconds duration);
+
 		// Visibility
 
 	protected:
@@ -70,7 +77,7 @@ namespace Magenta
 		
 		Position position;
 		double height$, width$; // %
-		int x, y, width, height;
+		double x, y, width, height;
 
 		long zIndex;
 

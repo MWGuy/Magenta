@@ -1,8 +1,7 @@
 #pragma once
 
-#include "Layout.h"
 #include <vector>
-#include <thread>
+#include <future>
 
 #define VALUE_ANIMATION_FREQURENCY 1 // ms
 
@@ -10,16 +9,16 @@ namespace Magenta
 {
 	typedef double Seconds;
 
-	class ValueAnimation;
+	class ValueAnimation_;
 	class AnimatedValue
 	{
-		typedef double* TargetValue;
+		typedef double& TargetValue;
 	public:
 		Seconds origin, duration;
 		double startValue, endValue;
 		TargetValue value;
 
-		void setValue(ValueAnimation* animation);
+		void setValue(ValueAnimation_* animation);
 
 		AnimatedValue(TargetValue target, double startVal, double endVal, Seconds durationS, Seconds originS = 0);
 	};
@@ -37,10 +36,8 @@ namespace Magenta
 		Terminated
 	} AnimationCircleState;
 
-	class ValueAnimation
+	class ValueAnimation_
 	{
-		std::thread timerThr;
-		void nextFrame();
 		bool mPaused;
 	public:
 		AnimationCircleState timerState;
@@ -50,10 +47,11 @@ namespace Magenta
 		bool repeat;
 		double speed;
 
+		void nextFrame();
+
 		bool isPaused() const;
 
 		std::vector<AnimatedValue> values;
-		Layout* layoutToUpdate;
 
 		void append(AnimatedValue value);
 
@@ -66,7 +64,9 @@ namespace Magenta
 		void pause();
 		void stop();
 
-		ValueAnimation(Seconds durationMs, Layout* optional = 0);
-		~ValueAnimation();
+		ValueAnimation_(Seconds durationS);
+		~ValueAnimation_();
 	};
+
+	typedef ValueAnimation_& ValueAnimation;
 }

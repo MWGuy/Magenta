@@ -219,6 +219,9 @@ namespace Magenta
 			}
 		}
 		layout()->update();
+
+		for (size_t i = 0; i < dependency.size(); i++)
+			delete dependency[i];
 	}
 
 	Widget& Widget::operator[](size_t index) {
@@ -230,6 +233,12 @@ namespace Magenta
 		if (isRoot())
 			return;
 		delete this;
+	}
+
+	ValueAnimation Widget::createValueAnimation(Seconds duration) {
+		ValueAnimation animation = *new ValueAnimation_(duration);
+		dependency.push_back(&animation);
+		return animation;
 	}
 
 	void Widget::hide() {

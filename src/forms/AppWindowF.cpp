@@ -141,6 +141,13 @@ namespace MagentaForm
 		menu.x = -14;
 		menu.onclick = removeWidget;
 
+		ValueAnimation animation = menu.createValueAnimation(2);
+		animation.append(AnimatedValue(menu.y, 10, 200, 2));
+		animation.append(AnimatedValue(menu.x, -100, -10, 1, 1));
+		animation.direction = AnimationDirection::ForwardReverse;
+		animation.repeat = true;
+		animation.play();
+
 		Frame addressbar = createFrame(panel, id_addressbar);
 		addressbar.position = CenterLeft;
 		addressbar.width$ = 100;

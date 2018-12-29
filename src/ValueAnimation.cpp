@@ -1,5 +1,7 @@
 #include "ValueAnimation.h"
-#include <thread>
+#include "Window.h"
+#include "Layout.h"
+#include <future>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -7,14 +9,18 @@
 
 namespace Magenta
 {
-	void AnimatedValue::setValue(ValueAnimation* animation)
+	void AnimatedValue::setValue(ValueAnimation_* animation)
 	{
-		long relativePosition = animation->position - duration;
-		if (relativePosition < 0)
-			*value = startValue;
-		if (relativePosition > duration)
-			*value = endValue;
-		*value = (endValue - startValue) / duration * relativePosition + startValue;
+		double relativePosition = animation->position - origin;
+		if (relativePosition < 0) {
+			value = startValue;
+			return;
+		}
+		if (relativePosition > duration) {
+			value = endValue;
+			return;
+		}
+		value = (endValue - startValue) / duration * relativePosition + startValue;
 	}
 
 	AnimatedValue::AnimatedValue(TargetValue target, double startVal, double endVal,
@@ -23,7 +29,7 @@ namespace Magenta
 	{
 	}
 
-	void ValueAnimation::nextFrame()
+	void ValueAnimation_::nextFrame()
 	{
 		if (isPaused())
 			return;
@@ -34,43 +40,48 @@ namespace Magenta
 			position += 0.001 * speed;
 			if (position > duration)
 			{
-				if(direction == AnimationDirection::ForwardReverse)
-					direction = BackwardReverse;
-				else
-					toStart();
+				if (repeat)
+				{
+					if (direction == AnimationDirection::ForwardReverse)
+						direction = BackwardReverse;
+					else
+						toStart();
+				}
+				else stop();
 			}
 		} else
 		{
 			position -= 0.001 * speed;
 			if (position < 0)
 			{
-				if (direction == AnimationDirection::BackwardReverse)
-					direction = ForwardReverse;
-				else
-					toEnd();
+				if (repeat)
+				{
+					if (direction == AnimationDirection::BackwardReverse)
+						direction = ForwardReverse;
+					else
+						toEnd();
+				}
+				else stop();
 			}
 		}
 		for (size_t i = 0; i < values.size(); i++)
 			values[i].setValue(this);
-
-		if (layoutToUpdate != 0)
-			layoutToUpdate->update();
 	}
 
-	bool ValueAnimation::isPaused() const {
+	bool ValueAnimation_::isPaused() const {
 		return mPaused;
 	}
 
-	void ValueAnimation::append(AnimatedValue value) {
+	void ValueAnimation_::append(AnimatedValue value) {
 		values.push_back(value);
 		values.back().setValue(this);
 	}
 
-	void ValueAnimation::toStart() {
+	void ValueAnimation_::toStart() {
 		position = 0;
 	}
 
-	void ValueAnimation::toBeginning() {
+	void ValueAnimation_::toBeginning() {
 		if (direction == AnimationDirection::Forward
 			|| direction == AnimationDirection::ForwardReverse)
 		{
@@ -79,29 +90,29 @@ namespace Magenta
 		else toEnd();
 	}
 
-	void ValueAnimation::toEnd() {
+	void ValueAnimation_::toEnd() {
 		position = duration - 1;
 	}
 
-	void ValueAnimation::play() {
+	void ValueAnimation_::play() {
 		mPaused = false;
 	}
 
-	void ValueAnimation::playFromBeginning() {
+	void ValueAnimation_::playFromBeginning() {
 		toBeginning();
 		play();
 	}
 
-	void ValueAnimation::pause() {
+	void ValueAnimation_::pause() {
 		mPaused = true;
 	}
 
-	void ValueAnimation::stop() {
+	void ValueAnimation_::stop() {
 		pause();
 		toBeginning();
 	}
 
-	void ThreadCircle(ValueAnimation* animation)
+	void ThreadCircle(ValueAnimation_* animation)
 	{
 		while (animation->timerState == Working)
 		{
@@ -110,19 +121,20 @@ namespace Magenta
 #ifdef _WIN32 
 			Sleep(VALUE_ANIMATION_FREQURENCY);
 #endif
+			animation->nextFrame();
 		}
 		animation->timerState = Terminated;
 	}
 
-	ValueAnimation::ValueAnimation(Seconds durationS, Layout* optional)
-		: mPaused(false), timerState(Working), duration(durationS), position(0), direction(AnimationDirection::Forward),
-		repeat(false), speed(1.0f), layoutToUpdate(optional)
+	ValueAnimation_::ValueAnimation_(Seconds durationS)
+		: mPaused(true), timerState(Working), duration(durationS), position(0), direction(AnimationDirection::Forward),
+		repeat(false), speed(1.0f)
 	{
-		timerThr = std::thread(ThreadCircle, this);
-		timerThr.detach();
+		auto thr = std::thread(ThreadCircle, this);
+		thr.detach();
 	}
 
-	ValueAnimation::~ValueAnimation()
+	ValueAnimation_::~ValueAnimation_()
 	{
 		timerState = PendingToTerminate;
 		while (timerState != Terminated)

@@ -28,6 +28,7 @@ namespace Magenta
 		Widget* findWidgetById(unsigned long id);
 
 		void update();
+		void forceUpdate();
 
 		Window* getWindow();
 		Rect getClientRect();
