@@ -37,6 +37,10 @@ namespace MagentaForm
 		ab->figPress = Figure("resources/sysbuttons.png", 42, 21, 21, 21);
 	}
 
+	void toggleOpenMenu(Widget& self) {
+		//self.layout()->findWidgetById(id_menu_popup)->toggleVisibility();
+	}
+
 	void AppWindowF ma_form
 	{
 		// Window caption
@@ -64,9 +68,9 @@ namespace MagentaForm
 		sysbutton_close.onclick = w_close;
 
 		ActionButton sysbutton_maximize = createActionButton(captionInner, id_sysbutton_maximize,
-			Figure("resources/sysbuttons.png", 0, 21, 21, 21),  // normal
-			Figure("resources/sysbuttons.png", 21, 21, 21, 21), // hover
-			Figure("resources/sysbuttons.png", 42, 21, 21, 21)  // press
+			Figure("resources/sysbuttons.png", 0, 42, 21, 21),  // normal
+			Figure("resources/sysbuttons.png", 21, 42, 21, 21), // hover
+			Figure("resources/sysbuttons.png", 42, 42, 21, 21)  // press
 		);
 		sysbutton_maximize.position = CenterRight;
 		sysbutton_maximize.width = 21;
@@ -118,28 +122,41 @@ namespace MagentaForm
 
 		// Panel controls
 
-		Frame backward = createFrame(panel, id_backward);
+		PanelButton backward = createPanelButton(panel, id_backward,
+			Figure("resources/panel.png", 0, 56, 56, 56)
+		);
 		backward.position = CenterLeft;
 		backward.width = 21;
 		backward.height = 21;
 		backward.x = 8;
 
-		Frame forward = createFrame(panel, id_forward);
+		PanelButton forward = createPanelButton(panel, id_forward,
+			Figure("resources/panel.png", 56, 0, 56, 56)
+		);
 		forward.position = CenterLeft;
 		forward.width = 21;
 		forward.height = 21;
 		forward.x = 38;
 
 		PanelButton menu = createPanelButton(panel, id_menu,
-			Figure("resources/panel.png", 0, 0, 75, 75)
+			Figure("resources/panel.png", 112, 0, 56, 56)
 		);
 		menu.position = CenterRight;
 		menu.width = 21;
 		menu.height = 21;
 		menu.x = -14;
-		menu.onclick = removeWidget;
+		menu.onclick = toggleOpenMenu;
 
-		Frame addressbar = createFrame(panel, id_addressbar);
+		Frame menuPopup = createFrame(view, id_menu_popup);
+		menuPopup.zIndex = 10;
+		menuPopup.position = TopRight;
+		menuPopup.width = 188;
+		menuPopup.height = 260;
+		menuPopup.y = 60;
+		menuPopup.x = -4;
+		menuPopup.hide();
+
+		AddressBar addressbar = createAddressBar(panel, id_addressbar);
 		addressbar.position = CenterLeft;
 		addressbar.width$ = 100;
 		addressbar.width -= 146;

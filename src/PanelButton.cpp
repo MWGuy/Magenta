@@ -80,7 +80,7 @@ namespace Magenta
 
 	void PanelButton_::setupAnimation()
 	{
-		animation.append(AnimatedValue(figure.scale, 1.0f, 1.275f, 0.1));
+		animation.append(AnimatedValue(figure.scale, 1.0f, 1.19f, 0.1));
 		animation.stayAtEnd = true;
 		animation.speed = 1.75;
 	}

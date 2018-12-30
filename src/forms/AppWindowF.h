@@ -7,6 +7,7 @@
 #include "../ActionButton.h"
 #include "../ValueAnimation.h"
 #include "../PanelButton.h"
+#include "../AddressBar.h"
 
 #include "../shared/NewtooView.h"
 
@@ -26,6 +27,7 @@
 #define id_refresh 9
 #define id_bookmark 10
 #define id_address 11
+#define id_menu_popup 12
 
 namespace MagentaForm {
 	void AppWindowF ma_form;

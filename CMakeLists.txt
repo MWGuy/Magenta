@@ -12,6 +12,8 @@ add_executable(
     Magenta WIN32
 		src/ActionButton.cpp
         src/ActionButton.h
+		src/AddressBar.cpp
+		src/AddressBar.h
 		src/EventHandler.cpp
 		src/EventHandler.h
 		src/Figure.cpp

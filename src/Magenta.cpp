@@ -130,6 +130,8 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 
 	ShowWindow(hInner, SW_SHOWNORMAL);
 
+	mwindow->toggleMaximize();
+
 	msg.message = ~WM_QUIT;
 	while (msg.message != WM_QUIT)
 	{
