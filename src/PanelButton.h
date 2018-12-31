@@ -6,7 +6,7 @@
 namespace Magenta
 {
 	class PanelButton_ : public Widget {
-		GlobalEventCallback callbackMouseUp;
+		SharedEventCallback callbackMouseUp;
 	public:
 		PanelButton_(Layout* aLayout, Widget* aParent, unsigned long aId = AutoId, Figure fig = Figure());
 		PanelButton_(Layout* aLayout, Widget* aParent, Figure fig = Figure());

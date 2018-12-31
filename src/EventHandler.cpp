@@ -29,20 +29,44 @@ namespace Magenta
 			sequence[i](*mAssignedWidget);
 	}
 
+	void WindowEventHandler::operator+=(WindowEventCallback callback) {
+		sequence.push_back(callback);
+	}
+
+	void WindowEventHandler::operator=(WindowEventCallback callback)
+	{
+		sequence.clear();
+		sequence.push_back(callback);
+	}
+
+	Window& WindowEventHandler::assignedWindow() {
+		return *mAssignedWindow;
+	}
+
+	void WindowEventHandler::dispatch()
+	{
+		for (size_t i = 0; i < sequence.size(); i++)
+			sequence[i](*mAssignedWindow);
+	}
+
+	WindowEventHandler::WindowEventHandler(Window* assignedTo) : mAssignedWindow(assignedTo)
+	{
+	}
+
 	EventHandler::EventHandler(Widget* assignedTo) : mAssignedWidget(assignedTo)
 	{
 	}
 
-	GlobalEventCallback::GlobalEventCallback(EventCallback aCallback, Widget& aSelfArg) : callback(aCallback), selfArg(aSelfArg)
+	SharedEventCallback::SharedEventCallback(EventCallback aCallback, Widget& aSelfArg) : callback(aCallback), selfArg(aSelfArg)
 	{
 	}
 	
-	void SharedEventHandler::operator+=(GlobalEventCallback* callback)
+	void SharedEventHandler::operator+=(SharedEventCallback* callback)
 	{
 		sequence.push_back(callback);
 	}
 
-	void SharedEventHandler::operator-=(GlobalEventCallback* callback)
+	void SharedEventHandler::operator-=(SharedEventCallback* callback)
 	{
 		for (size_t i = 0; i < sequence.size(); i++) {
 			if (sequence[i] == callback)

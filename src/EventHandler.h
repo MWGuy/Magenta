@@ -6,6 +6,7 @@
 
 namespace Magenta
 {
+	class Window;
 	class Widget;
 
 	typedef void(*EventCallback)(Widget& self);
@@ -28,21 +29,34 @@ namespace Magenta
 	typedef EventHandler MouseEventHandler;
 	typedef EventHandler WidgetEventHandler;
 
-	typedef void(*EventCallback)(Widget& self);
+	typedef void(*WindowEventCallback)(Window& self);
 
-	class GlobalEventCallback {
+	class WindowEventHandler {
+		std::vector<WindowEventCallback> sequence;
+		Window* mAssignedWindow;
+	public:
+		void operator+=(WindowEventCallback callback);
+		void operator=(WindowEventCallback callback);
+		Window& assignedWindow();
+
+		void dispatch();
+
+		WindowEventHandler(Window* assignedTo);
+	};
+
+	class SharedEventCallback {
 	public:
 		EventCallback callback;
 		Widget& selfArg;
 
-		GlobalEventCallback(EventCallback aCallback, Widget& aSelfArg);
+		SharedEventCallback(EventCallback aCallback, Widget& aSelfArg);
 	};
 
 	class SharedEventHandler {
-		std::vector<GlobalEventCallback*> sequence;
+		std::vector<SharedEventCallback*> sequence;
 	public:
-		void operator+=(GlobalEventCallback* callback);
-		void operator-=(GlobalEventCallback* callback);
+		void operator+=(SharedEventCallback* callback);
+		void operator-=(SharedEventCallback* callback);
 
 		void dispatchAll();
 

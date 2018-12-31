@@ -50,8 +50,6 @@ namespace Magenta
 		Widget* mousedownWidget;
 		Widget* focusedWidget;
 
-		SharedEventHandler onwindowmaximize;
-		SharedEventHandler onwindowrestore;
 		SharedEventHandler onmousedown;
 		SharedEventHandler onmouserightbuttonup;
 		SharedEventHandler onmouseup;

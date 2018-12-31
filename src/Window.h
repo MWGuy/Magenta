@@ -65,6 +65,11 @@ namespace Magenta
 		Window(HWND i, HWND h, WindowTransform* wtransform = 0);
 #endif
 
+		WindowEventHandler onwindowfocus;
+		WindowEventHandler onwindowblur;
+		WindowEventHandler onwindowmaximize;
+		WindowEventHandler onwindowrestore;
+
 		void setLoaded();
 	};
 }

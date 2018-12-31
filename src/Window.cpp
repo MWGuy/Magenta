@@ -18,7 +18,7 @@ namespace Magenta
 			CloseWindow(hWnd);
 			MoveWindow(hInner, savedX, savedY, savedWidth, savedHeight, false);
 			ShowWindow(hWnd, SW_SHOWNORMAL);
-			layout().onwindowrestore.dispatchAll();
+			onwindowrestore.dispatch();
 		}
 		else
 		{
@@ -33,7 +33,7 @@ namespace Magenta
 			SystemParametersInfo(SPI_GETWORKAREA, 0, &workArea, 0); // deprecated
 			MoveWindow(hInner, 0, 0, workArea.right, workArea.bottom, true);
 			SetWindowRgn(hInner, NULL, true);
-			layout().onwindowmaximize.dispatchAll();
+			onwindowmaximize.dispatch();
 		}
 #endif
 	}
@@ -96,12 +96,14 @@ namespace Magenta
 
 	Window::Window(HWND i, HWND h, void(*form)(Widget& view), WindowTransform* wtransform)
 		: hInner(i), hWnd(h), mMaximized(false), savedX(0), savedY(0), savedHeight(0), savedWidth(0),
-		mLayout(this, form), mWinTransform(wtransform), mIsLoaded(false)
+		mLayout(this, form), mWinTransform(wtransform), mIsLoaded(false),
+		onwindowfocus(this), onwindowblur(this), onwindowmaximize(this), onwindowrestore(this)
 	{
 	}
 
 	Window::Window(HWND i, HWND h, WindowTransform* wtransform) : hInner(i), hWnd(h), mMaximized(false), savedX(0), savedY(0),
-		savedHeight(0), savedWidth(0), mLayout(this), mWinTransform(wtransform), mIsLoaded(false)
+		savedHeight(0), savedWidth(0), mLayout(this), mWinTransform(wtransform), mIsLoaded(false),
+		onwindowfocus(this), onwindowblur(this), onwindowmaximize(this), onwindowrestore(this)
 	{
 	}
 #endif

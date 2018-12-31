@@ -5,7 +5,7 @@
 namespace Magenta
 {
 	class ActionButton_ : public Widget {
-		GlobalEventCallback callbackMouseUp;
+		SharedEventCallback callbackMouseUp;
 	public:
 		ActionButton_(Layout* aLayout, Widget* aParent, unsigned long aId = AutoId,
 			Figure normal = Figure(), Figure hover = Figure(), Figure press = Figure());
