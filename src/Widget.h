@@ -24,6 +24,13 @@ namespace Magenta
 		BottomRight
 	};
 
+	enum FocusPolicy {
+		NoFocus,
+		AutoFocus,
+		ManualFocus,
+		AlwaysFocus
+	};
+
 	class Widget {
 		Layout* pLayout;
 		Widget* pParent;
@@ -71,6 +78,13 @@ namespace Magenta
 		void toggleVisibility();
 		bool isVisible() const;
 
+		// Focus
+
+		FocusPolicy focusPolicy;
+		bool isFocused();
+		void focus();
+		void blur();
+
 		// Attributes
 
 		WidgetId id;
@@ -92,6 +106,8 @@ namespace Magenta
 		MouseEventHandler onmouseenter;
 		MouseEventHandler onmouseleave;
 		MouseEventHandler onmouseup;
+		WidgetEventHandler onfocus;
+		WidgetEventHandler onblur;
 		WidgetEventHandler onshow;
 		WidgetEventHandler onhide;
 	};

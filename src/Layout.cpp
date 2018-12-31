@@ -11,7 +11,7 @@ namespace Magenta
 {
 	Layout::Layout(Window* owner, void(*form)(Widget& view)) : pWindow(owner), pRoot(new Frame_(this, 0)),
 		scale(1.0), view(owner->handler(), sf::ContextSettings(24, 8, 8)),
-		mousemoveWidget(0), mousedownWidget(0)
+		mousemoveWidget(0), mousedownWidget(0), focusedWidget(0)
 	{
 		if (!font.loadFromFile("resources/fonts/third-party/Arimo-Regular.ttf")) {
 			MessageBox(0, "Missing font resources", "Magenta", MB_OK);
@@ -23,7 +23,7 @@ namespace Magenta
 
 	Layout::Layout(Window* owner) : pWindow(owner), pRoot(new Frame_(this, 0)),
 		scale(1.0), view(owner->handler(), sf::ContextSettings(24, 8, 8)),
-		mousemoveWidget(0), mousedownWidget(0)
+		mousemoveWidget(0), mousedownWidget(0), focusedWidget(0)
 	{
 		if (!font.loadFromFile("resources/fonts/third-party/Arimo-Regular.ttf")) {
 			MessageBox(0, "Missing font resources", "Magenta", MB_OK);
@@ -130,7 +130,14 @@ namespace Magenta
 		onmousedown.dispatchAll();
 		Widget* target = mouseTargetWidget();
 		if (target == 0)
+		{
+			if (focusedWidget != 0)
+				focusedWidget->blur();
+			focusedWidget = 0; // if focusPolicy == AlwaysFocus
 			return;
+		}
+		if(focusedWidget == 0 ||focusedWidget->focusPolicy != ManualFocus)
+			target->focus();
 
 		mousedownWidget = target;
 		target->onmousedown.dispatch();

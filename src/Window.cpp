@@ -15,13 +15,9 @@ namespace Magenta
 		if(isMaximized())
 		{
 			mMaximized = false;
-			MoveWindow(hInner, savedX, savedY, savedWidth, savedHeight, true);
-
-			// Update hWnd
-			RECT rect;
-			GetWindowRect(hWnd, (LPRECT)&rect);
-			MoveWindow(hWnd, rect.left, rect.top, rect.right - rect.left + 1, rect.bottom - rect.top, true);
-			MoveWindow(hWnd, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, true);
+			CloseWindow(hWnd);
+			MoveWindow(hInner, savedX, savedY, savedWidth, savedHeight, false);
+			ShowWindow(hWnd, SW_SHOWNORMAL);
 			layout().onwindowrestore.dispatchAll();
 		}
 		else

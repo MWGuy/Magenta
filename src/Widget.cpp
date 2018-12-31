@@ -178,9 +178,8 @@ namespace Magenta
 	}
 
 	Widget::Widget(Layout* aLayout, Widget* aParent, unsigned long aId)
-		: pLayout(aLayout), pParent(aParent), mComputedRect(), visible(true), id(aId),
-		position(TopLeft), height$(0), width$(0), x(0), y(0), zIndex(0),
-		width(0), height(0),
+		: pLayout(aLayout), pParent(aParent), mComputedRect(), visible(true), focusPolicy(AutoFocus),
+		id(aId), position(TopLeft), height$(0), width$(0), x(0), y(0), zIndex(0), width(0), height(0),
 
 		onclick(this),
 		onrightclick(this),
@@ -189,6 +188,8 @@ namespace Magenta
 		onmouseenter(this),
 		onmouseleave(this),
 		onmouseup(this),
+		onfocus(this),
+		onblur(this),
 		onshow(this),
 		onhide(this)
 	{
@@ -259,6 +260,35 @@ namespace Magenta
 
 	bool Widget::isVisible() const {
 		return visible;
+	}
+
+	bool Widget::isFocused() {
+		return focusPolicy == AlwaysFocus ? true : layout()->focusedWidget == this;
+	}
+
+	void Widget::focus()
+	{
+		if (focusPolicy == NoFocus || focusPolicy == AlwaysFocus)
+			return;
+
+		if (isFocused())
+			return;
+
+		if (layout()->focusedWidget != 0)
+			layout()->focusedWidget->onblur.dispatch();
+		layout()->focusedWidget = this;
+		onfocus.dispatch();
+	}
+
+	void Widget::blur()
+	{
+		if (focusPolicy == AlwaysFocus)
+			return;
+
+		if (!isFocused())
+			return;
+		layout()->focusedWidget = 0;
+		onblur.dispatch();
 	}
 
 	Frame_::Frame_(Layout* aLayout, Widget* aParent, unsigned long aId)
