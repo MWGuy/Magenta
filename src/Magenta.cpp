@@ -448,6 +448,8 @@ LRESULT CALLBACK InnProc(HWND hWnd, UINT message,
 		if (mouseDown)
 			return 0;
 
+		winTransforming = Idle;
+
 		if (mwindow != 0 && mwindow->isMaximized())
 			return 0;
 
