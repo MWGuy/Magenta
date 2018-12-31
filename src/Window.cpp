@@ -2,6 +2,10 @@
 
 namespace Magenta
 {
+	bool Window::isLoaded() const {
+		return mIsLoaded;
+	}
+
 	bool Window::isMaximized() const {
 		return mMaximized;
 	}
@@ -96,13 +100,17 @@ namespace Magenta
 
 	Window::Window(HWND i, HWND h, void(*form)(Widget& view), WindowTransform* wtransform)
 		: hInner(i), hWnd(h), mMaximized(false), savedX(0), savedY(0), savedHeight(0), savedWidth(0),
-		mLayout(this, form), mWinTransform(wtransform)
+		mLayout(this, form), mWinTransform(wtransform), mIsLoaded(false)
 	{
 	}
 
 	Window::Window(HWND i, HWND h, WindowTransform* wtransform) : hInner(i), hWnd(h), mMaximized(false), savedX(0), savedY(0),
-		savedHeight(0), savedWidth(0), mLayout(this), mWinTransform(wtransform)
+		savedHeight(0), savedWidth(0), mLayout(this), mWinTransform(wtransform), mIsLoaded(false)
 	{
 	}
 #endif
+
+	void Window::setLoaded() {
+		mIsLoaded = true;
+	}
 }

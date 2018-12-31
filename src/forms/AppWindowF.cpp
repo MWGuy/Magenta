@@ -15,26 +15,25 @@ namespace MagentaForm
 
 		if (self.layout()->getWindow()->isMaximized())
 		{
-			ab.figNormal = Figure("resources/sysbuttons.png", 0, 42, 21, 21);
-			ab.figHover = Figure("resources/sysbuttons.png", 21, 42, 21, 21);
-			ab.figPress = Figure("resources/sysbuttons.png", 42, 42, 21, 21);
+			ab.figNormal = Figure("resources/sysbuttons.png", 0, 62, 31, 31);
+			ab.figHover = Figure("resources/sysbuttons.png", 31, 62, 31, 31);
+			ab.figPress = Figure("resources/sysbuttons.png", 62, 62, 31, 31);
+			self.layout()->findWidgetById(id_sysbutton_close)->x = 0;
+			self.layout()->findWidgetById(id_sysbutton_maximize)->x = -31;
+			self.layout()->findWidgetById(id_sysbutton_minimize)->x = -62;
 		}
 		else
 		{
-			ab.figNormal = Figure("resources/sysbuttons.png", 0, 21, 21, 21);
-			ab.figHover = Figure("resources/sysbuttons.png", 21, 21, 21, 21);
-			ab.figPress = Figure("resources/sysbuttons.png", 42, 21, 21, 21);
+			ab.figNormal = Figure("resources/sysbuttons.png", 0, 31, 31, 31);
+			ab.figHover = Figure("resources/sysbuttons.png", 31, 31, 31, 31);
+			ab.figPress = Figure("resources/sysbuttons.png", 62, 31, 31, 31);
+			self.layout()->findWidgetById(id_sysbutton_close)->x = -6;
+			self.layout()->findWidgetById(id_sysbutton_maximize)->x = -37;
+			self.layout()->findWidgetById(id_sysbutton_minimize)->x = -69;
 		}
 	}
 	void w_minimize(Widget& self) {
 		self.layout()->getWindow()->minimize();
-
-		ActionButton_* ab = (ActionButton_*)self.layout()->findWidgetById(id_sysbutton_maximize);
-		if (ab == 0)
-			return;
-		ab->figNormal = Figure("resources/sysbuttons.png", 0, 42, 21, 21);
-		ab->figHover = Figure("resources/sysbuttons.png", 21, 21, 21, 21);
-		ab->figPress = Figure("resources/sysbuttons.png", 42, 21, 21, 21);
 	}
 
 	void toggleOpenMenu(Widget& self) {
@@ -57,36 +56,36 @@ namespace MagentaForm
 #ifndef _OSX
 
 		ActionButton sysbutton_close = createActionButton(captionInner, id_sysbutton_close,
-			Figure("resources/sysbuttons.png", 0, 0, 21, 21),  // normal
-			Figure("resources/sysbuttons.png", 21, 0, 21, 21), // hover
-			Figure("resources/sysbuttons.png", 42, 0, 21, 21)  // press
+			Figure("resources/sysbuttons.png", 0, 0, 31, 31),  // normal
+			Figure("resources/sysbuttons.png", 31, 0, 31, 31), // hover
+			Figure("resources/sysbuttons.png", 62, 0, 31, 31)  // press
 		);
 		sysbutton_close.position = CenterRight;
-		sysbutton_close.width = 21;
-		sysbutton_close.height = 21;
-		sysbutton_close.x = -4;
+		sysbutton_close.width = 31;
+		sysbutton_close.height = 31;
+		sysbutton_close.x = 0;
 		sysbutton_close.onclick = w_close;
 
 		ActionButton sysbutton_maximize = createActionButton(captionInner, id_sysbutton_maximize,
-			Figure("resources/sysbuttons.png", 0, 42, 21, 21),  // normal
-			Figure("resources/sysbuttons.png", 21, 42, 21, 21), // hover
-			Figure("resources/sysbuttons.png", 42, 42, 21, 21)  // press
+			Figure("resources/sysbuttons.png", 0, 62, 31, 31),  // normal
+			Figure("resources/sysbuttons.png", 31, 62, 31, 31), // hover
+			Figure("resources/sysbuttons.png", 62, 62, 31, 31)  // press
 		);
 		sysbutton_maximize.position = CenterRight;
-		sysbutton_maximize.width = 21;
-		sysbutton_maximize.height = 21;
+		sysbutton_maximize.width = 31;
+		sysbutton_maximize.height = 31;
 		sysbutton_maximize.x = -31;
 		sysbutton_maximize.onclick = w_maximize;
 
 		ActionButton sysbutton_minimize = createActionButton(captionInner, id_sysbutton_minimize,
-			Figure("resources/sysbuttons.png", 0, 63, 21, 21),  // normal
-			Figure("resources/sysbuttons.png", 21, 63, 21, 21), // hover
-			Figure("resources/sysbuttons.png", 42, 63, 21, 21)  // press
+			Figure("resources/sysbuttons.png", 0, 93, 31, 31),  // normal
+			Figure("resources/sysbuttons.png", 31, 93, 31, 31), // hover
+			Figure("resources/sysbuttons.png", 62, 93, 31, 31)  // press
 		);
 		sysbutton_minimize.position = CenterRight;
-		sysbutton_minimize.width = 21;
-		sysbutton_minimize.height = 21;
-		sysbutton_minimize.x = -58;
+		sysbutton_minimize.width = 31;
+		sysbutton_minimize.height = 31;
+		sysbutton_minimize.x = -62;
 		sysbutton_minimize.onclick = w_minimize;
 
 #else
@@ -111,8 +110,8 @@ namespace MagentaForm
 		NewtooView n2view = createNewtooView(view, id_n2view);
 		n2view.width$ = 100;
 		n2view.height$ = 100;
-		n2view.height = -31;
-		n2view.y = 31;
+		n2view.height = -36;
+		n2view.y = 36;
 
 		TopPanel panel = createTopPanel(view, id_panel);
 		panel.width$ = 100;

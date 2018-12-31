@@ -74,6 +74,8 @@ namespace Magenta
 		root()->draw();
 
 		view.display();
+
+		getWindow()->setLoaded();
 	}
 
 	Window* Layout::getWindow() {

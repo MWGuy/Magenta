@@ -38,8 +38,10 @@ namespace Magenta
 #endif
 		Layout mLayout;
 		WindowTransform* mWinTransform;
+		bool mIsLoaded;
 
 	public:
+		bool isLoaded() const;
 		bool isMaximized() const;
 		void toggleMaximize();
 		void minimize();
@@ -62,5 +64,7 @@ namespace Magenta
 		Window(HWND i, HWND h, void(*form)(Widget& view), WindowTransform* wtransform = 0);
 		Window(HWND i, HWND h, WindowTransform* wtransform = 0);
 #endif
+
+		void setLoaded();
 	};
 }

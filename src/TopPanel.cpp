@@ -25,7 +25,7 @@ namespace Magenta
 			lCorner.setPosition(computedRect().left, computedRect().top);
 			sf::CircleShape rCorner(5.0f);
 			rCorner.setFillColor(sf::Color(TopPanelColor));
-			rCorner.setPosition(computedRect().right - 10, computedRect().top);
+			rCorner.setPosition(computedRect().right - 9, computedRect().top);
 
 			sf::RectangleShape solidTop(sf::Vector2f(computedRect().width() - 10, 5));
 			solidTop.setFillColor(sf::Color(TopPanelColor));

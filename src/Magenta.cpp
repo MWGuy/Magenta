@@ -6,6 +6,11 @@
 
 #ifdef _WIN32
 
+#include <objidl.h>
+#include <gdiplus.h>
+using namespace Gdiplus;
+#pragma comment (lib,"Gdiplus.lib")
+
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 LRESULT CALLBACK InnProc(HWND, UINT, WPARAM, LPARAM);
 
@@ -57,7 +62,10 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 	MSG                 msg;
 	WNDCLASS            wndClass;
 	WNDCLASS            innClass;
+	GdiplusStartupInput gdiplusStartupInput;
 	ULONG_PTR           gdiplusToken;
+
+	GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
 
 	wndClass.style = CS_HREDRAW | CS_VREDRAW;
 	wndClass.lpfnWndProc = WndProc;
@@ -83,8 +91,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 	innClass.lpszClassName = TEXT("ma_inner");
 	RegisterClass(&innClass);
 
-	hWnd = CreateWindowEx(
-		WS_EX_TRANSPARENT,
+	hWnd = CreateWindow(
 		TEXT("ma_main_window"),   // window class name
 		TEXT("Magenta"),          // window caption
 		WS_OVERLAPPEDWINDOW,      // window style
@@ -101,8 +108,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 	lStyle &= ~(WS_CAPTION | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU);
 	SetWindowLong(hWnd, GWL_STYLE, lStyle);
 
-	// Apply transparent style
-	MoveWindow(hWnd, 200, 200, 800, 580, false);
+	SetWindowLong(hWnd, -20, WS_EX_LAYERED);
 
 	SetTimer(hWnd, 1, 1, (TIMERPROC)&WndProc);
 
@@ -118,19 +124,19 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 	mwindow = new Magenta::Window(hInner, hWnd, MagentaForm::AppWindowF);
 	mwindow->setTransformable(&winTransforming);
 
-	ShowWindow(hWnd, iCmdShow);
-
 	SetTimer(hInner, 2, 100, (TIMERPROC)&InnProc);
 
 	RECT workArea;
 	SystemParametersInfo(SPI_GETWORKAREA, 0, &workArea, 0);
-	MoveWindow(hWnd, workArea.right/2 - 400, workArea.bottom / 2 - 290, 800, 580, true);
-
-	adaptWindowRect(hWnd);
+	MoveWindow(hWnd, workArea.right / 2 - 400, workArea.bottom / 2 - 290, 800, 580, true);
 
 	ShowWindow(hInner, SW_SHOWNORMAL);
 
 	mwindow->toggleMaximize();
+
+	MoveWindow(hWnd, 200, 100, 800, 580, false);
+	adaptWindowRect(hWnd);
+	ShowWindow(hWnd, iCmdShow);
 
 	msg.message = ~WM_QUIT;
 	while (msg.message != WM_QUIT)
@@ -152,6 +158,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 	
 	//delete mwindow; 
 
+	GdiplusShutdown(gdiplusToken);
 	return msg.wParam;
 }
 
@@ -166,13 +173,58 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 	switch (message)
 	{
 	case WM_PAINT:
-		hdc = BeginPaint(hWnd, &ps);
-		EndPaint(hWnd, &ps);
 		break;
 	case WM_MOVING:
 	case WM_SIZING:
 	case WM_SIZE:
 		adaptWindowRect(hWnd);
+
+		if(mwindow != 0 && mwindow->isLoaded())
+		{
+			RECT wndRect;
+			::GetWindowRect(hWnd, &wndRect);
+			SIZE wndSize = { wndRect.right - wndRect.left,wndRect.bottom - wndRect.top };
+			HDC hdc = ::GetDC(hWnd);
+			HDC memDC = ::CreateCompatibleDC(hdc);
+			HBITMAP memBitmap = ::CreateCompatibleBitmap(hdc, wndSize.cx, wndSize.cy);
+			::SelectObject(memDC, memBitmap);
+
+			Gdiplus::Graphics graphics(memDC);
+			Gdiplus::Image dropshadow(L"resources/dropshadow.png");
+
+			Gdiplus::Rect topLeft(0, 0, 12, 12);
+			Gdiplus::Rect topRight(wndSize.cx - 12, 0, 12, 12);
+			Gdiplus::Rect bottomLeft(0, wndSize.cy - 12, 12, 12);
+			Gdiplus::Rect bottomRight(wndSize.cx - 12, wndSize.cy - 12, 12, 12);
+			Gdiplus::Rect left(0, 12, 4, wndSize.cy - 24);
+			Gdiplus::Rect right(wndSize.cx - 5, 12, 4, wndSize.cy - 24);
+			Gdiplus::Rect top(12, 0, wndSize.cx - 24, 4);
+			Gdiplus::Rect bottom(12, wndSize.cy - 5, wndSize.cx - 24, 4);
+
+			graphics.DrawImage(&dropshadow, topLeft, 0, 0, 7, 7, UnitPixel);
+			graphics.DrawImage(&dropshadow, topRight, 10, 0, 7, 7, UnitPixel);
+			graphics.DrawImage(&dropshadow, bottomLeft, 0, 10, 7, 7, UnitPixel);
+			graphics.DrawImage(&dropshadow, bottomRight, 10, 10, 7, 7, UnitPixel);
+			graphics.DrawImage(&dropshadow, left, 0, 8, 4, 1, UnitPixel);
+			graphics.DrawImage(&dropshadow, top, 8, 0, 1, 4, UnitPixel);
+			graphics.DrawImage(&dropshadow, right, 13, 8, 4, 1, UnitPixel);
+			graphics.DrawImage(&dropshadow, bottom, 8, 13, 1, 4, UnitPixel);
+
+			HDC screenDC = GetDC(NULL);
+			POINT ptSrc = { 0, 0 };
+
+			POINT pt = { wndRect.left, wndRect.top };
+
+			BLENDFUNCTION blendFunction;
+			blendFunction.AlphaFormat = AC_SRC_ALPHA;
+			blendFunction.BlendFlags = 0;
+			blendFunction.BlendOp = AC_SRC_OVER;
+			blendFunction.SourceConstantAlpha = 128;
+			::UpdateLayeredWindow(hWnd, screenDC, &pt, &wndSize, memDC, &ptSrc, 0, &blendFunction, 2);
+
+			::DeleteDC(memDC);
+			::DeleteObject(memBitmap);
+		}
 		break;
 	case WM_LBUTTONDOWN:
 	case WM_RBUTTONDOWN:
@@ -182,6 +234,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 	case WM_RBUTTONUP:
 		winTransforming = Idle;
 		mouseDown = false;
+		break;
+	case WM_ERASEBKGND:
+		return 0;
 		break;
 	case WM_TIMER:
 		mwindow->layout().executeOnMouseMove();

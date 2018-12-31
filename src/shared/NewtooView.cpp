@@ -17,7 +17,7 @@ namespace Magenta
 		canvas().draw(wrect);
 
 		sf::RectangleShape panelBorder(sf::Vector2f(computedRect().width(), 1));
-		panelBorder.setPosition(1, computedRect().top + 39 * layout()->scale);
+		panelBorder.setPosition(0, computedRect().top + 34 * layout()->scale);
 		panelBorder.setFillColor(sf::Color(226, 226, 226));
 		canvas().draw(panelBorder);
 
