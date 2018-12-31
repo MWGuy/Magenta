@@ -7,7 +7,6 @@ project(Magenta)
 INCLUDE_DIRECTORIES(D:\\sfml\\include\\)
 LINK_DIRECTORIES(D:\\sfml\\lib\\)
 
-
 add_executable(
     Magenta WIN32
 		src/ActionButton.cpp
@@ -44,6 +43,7 @@ add_executable(
         src/forms/AppWindowF.h
 		src/shared/NewtooView.cpp
         src/shared/NewtooView.h
+		${CMAKE_CURRENT_SOURCE_DIR}/resources/resources.rc
 )
 
 target_link_libraries(Magenta sfml-graphics sfml-window sfml-system)

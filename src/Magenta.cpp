@@ -6,6 +6,8 @@
 
 #ifdef _WIN32
 
+#include "../resources/resource.h"
+
 #include <objidl.h>
 #include <gdiplus.h>
 using namespace Gdiplus;
@@ -72,7 +74,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 	wndClass.cbClsExtra = 0;
 	wndClass.cbWndExtra = 0;
 	wndClass.hInstance = hInstance;
-	wndClass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+	wndClass.hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON1));
 	wndClass.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wndClass.hbrBackground = (HBRUSH)(WHITE_BRUSH);
 	wndClass.lpszMenuName = NULL;
