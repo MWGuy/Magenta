@@ -13,6 +13,8 @@ add_executable(
         src/ActionButton.h
 		src/AddressBar.cpp
 		src/AddressBar.h
+		src/AddressText.cpp
+		src/AddressText.h
 		src/EventHandler.cpp
 		src/EventHandler.h
 		src/Figure.cpp
@@ -35,6 +37,8 @@ add_executable(
 		src/PanelButton.cpp
 		src/TabRegion.cpp
         src/TabRegion.h
+		src/TextArea.cpp
+        src/TextArea.h
 		src/TopPanel.h
 		src/TopPanel.cpp
 		src/ValueAnimation.cpp

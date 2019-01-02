@@ -18,6 +18,8 @@ namespace Magenta
 	class Layout {
 		Window* pWindow;
 		Frame_* pRoot;
+
+		void setupFont();
 	public:
 		Layout(Window* owner, void(*form)(Widget& view));
 		Layout(Window* owner);

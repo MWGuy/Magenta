@@ -71,7 +71,7 @@ namespace Magenta
 		innerRectH.setFillColor(sf::Color(INNER_COLOR));
 		canvas().draw(innerRectH);
 
-		//drawChilds();
+		drawChilds();
 	}
 
 	AddressBar createAddressBar(Widget& owner, unsigned long aId) {

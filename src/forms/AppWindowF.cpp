@@ -29,7 +29,7 @@ namespace MagentaForm
 			ab.figPress = Figure("resources/sysbuttons.png", 62, 31, 31, 31);
 			self.layout()->findWidgetById(id_sysbutton_close)->x = -6;
 			self.layout()->findWidgetById(id_sysbutton_maximize)->x = -37;
-			self.layout()->findWidgetById(id_sysbutton_minimize)->x = -69;
+			self.layout()->findWidgetById(id_sysbutton_minimize)->x = -68;
 		}
 	}
 	void w_minimize(Widget& self) {
@@ -162,31 +162,30 @@ namespace MagentaForm
 		addressbar.height = 31;
 		addressbar.x = 73;
 
-		Frame connection_icon = createFrame(addressbar, id_connection_icon);
+		PanelButton connection_icon = createPanelButton(addressbar, id_connection_icon, Figure("resources/panel.png", 0, 112, 56, 56));
 		connection_icon.position = CenterLeft;
 		connection_icon.width = 16;
 		connection_icon.height = 16;
 		connection_icon.x = 8;
 
-		Frame refresh = createFrame(addressbar, id_refresh);
+		ActionButton refresh = createActionButton(addressbar, id_refresh,
+			Figure("resources/panel.png", 112, 112, 56, 56),
+			Figure("resources/panel.png", 112, 168, 56, 56),
+			Figure("resources/panel.png", 112, 224, 56, 56)
+		);
 		refresh.position = CenterRight;
 		refresh.width = 18;
 		refresh.height = 18;
 		refresh.x -= 8;
 
-		Frame bookmark = createFrame(addressbar, id_bookmark);
-		bookmark.position = CenterRight;
-		bookmark.width = 16;
-		bookmark.height = 16;
-		bookmark.x -= 32;
-
-		Frame address = createFrame(addressbar, id_bookmark);
-		address.position = TopLeft;
+		AddressText address = createAddressText(addressbar, id_address);
+		address.position = CenterLeft;
 		address.width$ = 100;
 		address.width -= 92;
-		address.height = 31;
+		address.height = 14;
 		address.x = 32;
-
+		address.y = -1;
+		address.setText("www.yandex.ru/search");
 
 	}
 

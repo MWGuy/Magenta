@@ -8,6 +8,7 @@
 #include "../ValueAnimation.h"
 #include "../PanelButton.h"
 #include "../AddressBar.h"
+#include "../AddressText.h"
 
 #include "../shared/NewtooView.h"
 
@@ -25,9 +26,8 @@
 #define id_addressbar 7
 #define id_connection_icon 8
 #define id_refresh 9
-#define id_bookmark 10
-#define id_address 11
-#define id_menu_popup 12
+#define id_address 10
+#define id_menu_popup 11
 
 namespace MagentaForm {
 	void AppWindowF ma_form;
