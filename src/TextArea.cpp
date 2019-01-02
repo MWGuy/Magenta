@@ -190,9 +190,11 @@ selectionBoxes.back().getSize().y))
 
 	void TextArea_keydown(Widget& self, KeyCode key)
 	{
-		if (key == Key_A) {
+		char character = keyCodeToCharacter(key, self.layout()->getWindow());
+		if (character != NotCharacterKey)
+		{
 			TextArea ta = (TextArea)self;
-			ta.setText(ta.text() + 'a');
+			ta.setText(ta.text() + character);
 		}
 	}
 

@@ -19,6 +19,8 @@ add_executable(
 		src/EventHandler.h
 		src/Figure.cpp
         src/Figure.h
+		src/Keyboard.cpp
+        src/Keyboard.h
         src/Magenta.cpp
         src/Magenta.h
         src/Window.cpp
