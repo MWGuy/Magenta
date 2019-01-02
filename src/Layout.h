@@ -42,6 +42,8 @@ namespace Magenta
 		void executeOnMouseDown();
 		void executeOnMouseMove();
 		void executeOnMouseUp();
+		void executeOnKeyDown(short param);
+		void executeOnKeyUp(short param);
 
 		float scale;
 

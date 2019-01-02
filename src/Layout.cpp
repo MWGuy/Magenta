@@ -137,7 +137,7 @@ namespace Magenta
 			focusedWidget = 0; // if focusPolicy == AlwaysFocus
 			return;
 		}
-		if(focusedWidget == 0 ||focusedWidget->focusPolicy != ManualFocus)
+		if(target->focusPolicy != ManualFocus)
 			target->focus();
 
 		mousedownWidget = target;
@@ -189,5 +189,23 @@ namespace Magenta
 			target->onclick.dispatch();
 		}
 		mousedownWidget = 0;
+	}
+
+	void Layout::executeOnKeyDown(short param) {
+		if (focusedWidget == 0)
+		{
+			root()->onkeydown.dispatch(keyCodeFromWin32(param));
+			return;
+		}
+		focusedWidget->onkeydown.dispatch(keyCodeFromWin32(param));
+	}
+
+	void Layout::executeOnKeyUp(short param) {
+		if (focusedWidget == 0)
+		{
+			root()->onkeyup.dispatch(keyCodeFromWin32(param));
+			return;
+		}
+		focusedWidget->onkeyup.dispatch(keyCodeFromWin32(param));
 	}
 }

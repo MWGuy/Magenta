@@ -66,6 +66,8 @@ namespace Magenta
 		bool isMultiline() const;
 		void setMultiline(bool aMultiline);
 
+		void clearSelection();
+
 		void setText(std::string string);
 		std::string text();
 

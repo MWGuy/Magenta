@@ -187,6 +187,18 @@ namespace MagentaForm
 		address.y = -1;
 		address.setText("www.yandex.ru/search");
 
+		TextArea text = createTextArea(view);
+		text.zIndex = 9999999;
+		text.position = TopLeft;
+		text.setMultiline(true);
+		text.readonly = false;
+		text.fontSize = 16;
+		text.width = 400;
+		text.height = 400;
+		text.x = 20;
+		text.y = 120;
+		text.setText("Hello!\nWorld!))");
+
 	}
 
 

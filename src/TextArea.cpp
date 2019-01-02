@@ -33,7 +33,7 @@ namespace Magenta
 
 	void TextArea_::processText()
 	{
-		if (!multiline)
+		if (multiline)
 			return;
 
 		std::string reference = gtext.getString();
@@ -93,8 +93,15 @@ namespace Magenta
 		return Glyph(x, y, i + 1);
 	}
 
-#define AddLine() selectionBoxes.push_back(sf::RectangleShape(sf::Vector2f(0.0, lineSpacing + (int)(lineSpacing / 4) ))); \
-selectionBoxes.back().setPosition(x, y); selectionBoxes.back().setFillColor(sf::Color(SELECTION_COLOR))
+#define AddLine() \
+if(isMultiline()) { \
+selectionBoxes.push_back(sf::RectangleShape(sf::Vector2f(0.0, lineSpacing ))); \
+selectionBoxes.back().setPosition(x, y + (int)(lineSpacing / 8)); \
+selectionBoxes.back().setFillColor(sf::Color(SELECTION_COLOR)); \
+} else {\
+selectionBoxes.push_back(sf::RectangleShape(sf::Vector2f(0.0, lineSpacing + (int)(lineSpacing / 4) ))); \
+selectionBoxes.back().setPosition(x, y); selectionBoxes.back().setFillColor(sf::Color(SELECTION_COLOR)); }
+
 #define GrowLine(len) selectionBoxes.back().setSize(sf::Vector2f(selectionBoxes.back().getSize().x + len, \
 selectionBoxes.back().getSize().y))
 #define ThisLine() selectionBoxes.back()
@@ -175,6 +182,20 @@ selectionBoxes.back().getSize().y))
 #endif
 	}
 
+	void TextArea_blur(Widget& self)
+	{
+		TextArea ta = (TextArea)self;
+		ta.clearSelection();
+	}
+
+	void TextArea_keydown(Widget& self, KeyCode key)
+	{
+		if (key == Key_A) {
+			TextArea ta = (TextArea)self;
+			ta.setText(ta.text() + 'a');
+		}
+	}
+
 	void TextArea_::initialize()
 	{
 		if (font == 0)
@@ -190,6 +211,8 @@ selectionBoxes.back().getSize().y))
 
 		onmousemove.setWidgetSpecific(TextArea_mousemove);
 		onmousedown.setWidgetSpecific(TextArea_mousedown);
+		onblur.setWidgetSpecific(TextArea_blur);
+		onkeydown.setWidgetSpecific(TextArea_keydown);
 	}
 
 	TextArea_::TextArea_(Layout* aLayout, Widget* aParent, unsigned long aId, FontSize aFontSize, FontColor aColor,
@@ -237,19 +260,26 @@ selectionBoxes.back().getSize().y))
 
 	void TextArea_::setMultiline(bool aMultiline) {
 		multiline = aMultiline;
-		if (multiline)
-			processText();
+		processText();
+	}
+
+	void TextArea_::clearSelection()
+	{
+		std::string str = gtext.getString();
+		selectionStart.index = str.size() - 1;
+		selectionEnd.index = selectionStart.index;
 	}
 
 	void TextArea_::setText(std::string string) {
 		gtext.setString(string);
-		if (multiline)
-			processText();
+		processText();
 	}
 
 	std::string TextArea_::text() {
 		std::string str = gtext.getString();
-		return str.substr(0, str.size() - 2);
+		while (str[str.size() - 1] == LineEnd)
+			str = str.erase(str.size() - 1, 1);
+		return str;
 	}
 
 	void TextArea_::drawTextArea()

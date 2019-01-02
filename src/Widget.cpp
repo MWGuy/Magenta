@@ -191,7 +191,9 @@ namespace Magenta
 		onfocus(this),
 		onblur(this),
 		onshow(this),
-		onhide(this)
+		onhide(this),
+		onkeydown(this),
+		onkeyup(this)
 	{
 		if (id == AutoId)
 			id = rand();

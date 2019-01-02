@@ -110,6 +110,8 @@ namespace Magenta
 		WidgetEventHandler onblur;
 		WidgetEventHandler onshow;
 		WidgetEventHandler onhide;
+		KeyboardEventHandler onkeydown;
+		KeyboardEventHandler onkeyup;
 	};
 
 	// Common widgets

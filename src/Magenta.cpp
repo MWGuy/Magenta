@@ -414,6 +414,12 @@ LRESULT CALLBACK InnProc(HWND hWnd, UINT message,
 		updateContext();
 		EndPaint(hInner, &ps);
 		break;
+	case WM_KEYDOWN:
+		mwindow->layout().executeOnKeyDown(wParam);
+		break;
+	case WM_KEYUP:
+		mwindow->layout().executeOnKeyUp(wParam);
+		break;
 	case WM_LBUTTONDOWN:
 		mwindow->layout().executeOnMouseDown();
 		mouseDown = true;
