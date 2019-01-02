@@ -18,6 +18,11 @@ namespace Magenta
 		return x == -1 ? y == -1 : false;
 	}
 
+	FontColor::FontColor(unsigned char aRed, unsigned char aGreen, unsigned char aBlue, unsigned char aAlpha)
+		:red(aRed), green(aGreen), blue(aBlue), alpha(aAlpha)
+	{
+	}
+
 	TextArea_::Glyph::Glyph(double aX, double aY, size_t aIndex) : x(aX), y(aY), index(aIndex)
 	{
 	}
@@ -37,8 +42,10 @@ namespace Magenta
 
 		if (indexOfLineEnd != std::string::npos) {
 			reference = reference.substr(0, indexOfLineEnd);
-			gtext.setString(reference);
 		}
+		reference += LineEnd;
+
+		gtext.setString(reference);
 	}
 
 	TextArea_::Glyph TextArea_::getGlyph(CursorPoint point)
@@ -80,12 +87,70 @@ namespace Magenta
 				if (point.y >= y && point.y < y + lineSpacing)
 					return Glyph(x, y, i);
 			}
+
 			x += glyphWidth;
 		}
 		return Glyph(x, y, i + 1);
 	}
 
-	void TextArea_select(Widget& self)
+#define AddLine() selectionBoxes.push_back(sf::RectangleShape(sf::Vector2f(0.0, lineSpacing + (int)(lineSpacing / 4) ))); \
+selectionBoxes.back().setPosition(x, y); selectionBoxes.back().setFillColor(sf::Color(SELECTION_COLOR))
+#define GrowLine(len) selectionBoxes.back().setSize(sf::Vector2f(selectionBoxes.back().getSize().x + len, \
+selectionBoxes.back().getSize().y))
+#define ThisLine() selectionBoxes.back()
+
+	void TextArea_::computeSelectionVisual()
+	{
+		Glyph *start, *end;
+
+		if (selectionStart.index < selectionEnd.index)
+		{
+			start = &selectionStart;
+			end = &selectionEnd;
+		} else
+		{
+			start = &selectionEnd;
+			end = &selectionStart;
+		}
+
+		bool  isBold = gtext.getStyle() == sf::Text::Bold;
+		double lineSpacing = gtext.getLineSpacing() + gtext.getCharacterSize();
+
+		double x, y;
+		x = start->x;
+		y = start->y;
+
+		std::string reference = gtext.getString();
+
+		AddLine();
+
+		size_t end_index = end->index - 1;
+		if (end_index == reference.size())
+			end_index--;
+
+		for (std::size_t i = start->index; i <= end_index; ++i)
+		{
+			sf::Uint32 sign = reference[i];
+			sf::Uint32 previousSign = i > 0 ? reference[i - 1] : 0;
+
+			double cx = x;
+
+			x += font->getKerning(previousSign, sign, gtext.getCharacterSize());
+
+			if (sign == LineEnd)
+			{
+				x = computedRect().left;
+				y += lineSpacing;
+				AddLine();
+				continue;
+			}
+			x += font->getGlyph(sign, gtext.getCharacterSize(), isBold).advance;
+
+			GrowLine(x - cx);
+		}
+	}
+
+	void TextArea_mousedown(Widget& self)
 	{
 		TextArea ta = (TextArea)self;
 #ifdef _WIN32
@@ -95,6 +160,19 @@ namespace Magenta
 		ta.select(CursorPoint(p.x, p.y));
 #endif
 		ta.clicked();
+	}
+
+	void TextArea_mousemove(Widget& self)
+	{
+		if (self.layout()->mousedownWidget != &self)
+			return;
+		TextArea ta = (TextArea)self;
+#ifdef _WIN32
+		POINT p;
+		GetCursorPos(&p);
+		ScreenToClient(self.layout()->getWindow()->handler(), &p);
+		ta.select(CursorPoint(ta.selectionStart.x, ta.selectionStart.y), CursorPoint(p.x, p.y));
+#endif
 	}
 
 	void TextArea_::initialize()
@@ -110,31 +188,47 @@ namespace Magenta
 		cursorAnimation.repeat = true;
 		cursorAnimation.play();
 
-		onmousedown = TextArea_select;
+		onmousemove.setWidgetSpecific(TextArea_mousemove);
+		onmousedown.setWidgetSpecific(TextArea_mousedown);
 	}
 
-	TextArea_::TextArea_(Layout* aLayout, Widget* aParent, unsigned long aId, size_t aFontSize, bool aMultiline, sf::Font* aFont)
+	TextArea_::TextArea_(Layout* aLayout, Widget* aParent, unsigned long aId, FontSize aFontSize, FontColor aColor,
+		bool aMultiline, bool aReadonly, bool aSelectable, sf::Font* aFont)
 		: Widget(aLayout, aParent, aId), font(aFont), multiline(aMultiline), selectionStart(0, 0, 0), selectionEnd(),
-		cursorOpacity(1.0), cursorAnimation(0.75), fontSize(aFontSize)
+		cursorOpacity(1.0), cursorAnimation(0.75), readonly(aReadonly), selectable(aSelectable),
+		fontSize(aFontSize), fontColor(aColor)
 	{
 		initialize();
 	}
 
-	TextArea_::TextArea_(Layout* aLayout, Widget* aParent, size_t aFontSize, bool aMultiline, sf::Font* aFont)
+	TextArea_::TextArea_(Layout* aLayout, Widget* aParent, FontSize aFontSize, FontColor aColor, bool aMultiline,
+		bool aReadonly, bool aSelectable, sf::Font* aFont)
 		: Widget(aLayout, aParent, AutoId), font(aFont), multiline(aMultiline), selectionStart(0, 0, 0), selectionEnd(),
-		cursorOpacity(1.0), cursorAnimation(0.75), fontSize(aFontSize)
+		cursorOpacity(1.0), cursorAnimation(0.75), readonly(aReadonly), selectable(aSelectable),
+		fontSize(aFontSize), fontColor(aColor)
 	{
 		initialize();
 	}
 
-	void TextArea_::select(CursorPoint start, CursorPoint end)
+	void TextArea_::select(CursorPoint point1, CursorPoint point2)
 	{
-		selectionStart = getGlyph(start);
-
-		if (end.isUnset())
+		selectionBoxes.clear();
+		if (!selectable)
 			return;
 
-		selectionEnd = getGlyph(end);
+		selectionStart = getGlyph(point1);
+
+		if (point2.isUnset()) {
+			selectionStart.index = selectionEnd.index;
+		}
+		else selectionEnd = getGlyph(point2);
+
+		if (isSelected())
+			computeSelectionVisual();
+	}
+
+	bool TextArea_::isSelected() {
+		return selectionStart.index != selectionEnd.index;
 	}
 
 	bool TextArea_::isMultiline() const {
@@ -154,18 +248,23 @@ namespace Magenta
 	}
 
 	std::string TextArea_::text() {
-		return gtext.getString();
+		std::string str = gtext.getString();
+		return str.substr(0, str.size() - 2);
 	}
 
-	void TextArea_::draw()
+	void TextArea_::drawTextArea()
 	{
+		for (size_t i = 0; i < selectionBoxes.size(); i++)
+			canvas().draw(selectionBoxes[i]);
+
 		gtext.setCharacterSize(fontSize);
+		gtext.setColor(sf::Color(fontColor.red, fontColor.green, fontColor.blue, fontColor.alpha));
 		gtext.setPosition(computedRect().left, computedRect().top);
 		gtext.setFont(*font);
 
 		canvas().draw(gtext);
 
-		if (isFocused())
+		if (isFocused() && !isSelected() && !readonly)
 		{
 			sf::RectangleShape cursor(sf::Vector2f(1, gtext.getCharacterSize() + 4));
 			cursor.setPosition(selectionStart.x, selectionStart.y + gtext.getCharacterSize() / 8 - 2);
@@ -184,7 +283,11 @@ namespace Magenta
 		d.setCharacterSize(12);
 		canvas().draw(d);
 #endif debug
+	}
 
+	void TextArea_::draw()
+	{
+		drawTextArea();
 		drawChilds();
 	}
 
