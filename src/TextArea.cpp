@@ -23,11 +23,11 @@ namespace Magenta
 	{
 	}
 
-	TextArea_::Glyph::Glyph(double aX, double aY, size_t aIndex) : x(aX), y(aY), index(aIndex)
+	Glyph::Glyph(double aX, double aY, size_t aIndex) : x(aX), y(aY), index(aIndex)
 	{
 	}
 
-	TextArea_::Glyph::Glyph() : x(0), y(0), index(-1)
+	Glyph::Glyph() : x(0), y(0), index(-1)
 	{
 	}
 
@@ -48,7 +48,7 @@ namespace Magenta
 		gtext.setString(reference);
 	}
 
-	TextArea_::Glyph TextArea_::getGlyph(CursorPoint point)
+	Glyph TextArea_::getGlyph(CursorPoint point)
 	{
 		bool  isBold = gtext.getStyle() == sf::Text::Bold;
 		double lineSpacing = gtext.getLineSpacing()*2 + gtext.getCharacterSize();
@@ -223,7 +223,7 @@ selectionBoxes.back().getSize().y))
 		switch (key)
 		{
 		case Key_Back:
-			ta.toUndo.push_back(ta.text());
+			ta.toUndo.push_back(ta.snapshot());
 			{
 				std::string str = ta.text();
 				ta.setText(str.substr(0, str.size() - 1));
@@ -232,7 +232,7 @@ selectionBoxes.back().getSize().y))
 			return;
 			break;
 		case Key_Enter:
-			ta.toUndo.push_back(ta.text());
+			ta.toUndo.push_back(ta.snapshot());
 			ta.setText(ta.text() + LineEnd);
 			ta.toRedo.clear();
 			return;
@@ -367,7 +367,7 @@ selectionBoxes.back().getSize().y))
 
 		if (character != NotCharacterKey)
 		{
-			ta.toUndo.push_back(ta.text());
+			ta.toUndo.push_back(ta.snapshot());
 			ta.toRedo.clear();
 			if (!ta.shift)
 				character = tolower(character);
@@ -476,9 +476,14 @@ selectionBoxes.back().getSize().y))
 		if (toUndo.empty())
 			return;
 
-		toRedo.push_back(text());
-		setText(toUndo.back());
+		toRedo.push_back(snapshot());
+		setText(toUndo.back().text);
+		selectionStart = toUndo.back().selectionStart;
+		selectionEnd = toUndo.back().selectionEnd;
 		toUndo.pop_back();
+		selectionBoxes.clear();
+		if (isSelected())
+			computeSelectionVisual();
 	}
 
 	void TextArea_::redo()
@@ -486,9 +491,14 @@ selectionBoxes.back().getSize().y))
 		if (toRedo.empty())
 			return;
 
-		toUndo.push_back(text());
-		setText(toRedo.back());
+		toUndo.push_back(snapshot());
+		setText(toRedo.back().text);
+		selectionStart = toRedo.back().selectionStart;
+		selectionEnd = toRedo.back().selectionEnd;
 		toRedo.pop_back();
+		selectionBoxes.clear();
+		if (isSelected())
+			computeSelectionVisual();
 	}
 
 	void TextArea_::setText(std::string string) {
@@ -554,6 +564,15 @@ selectionBoxes.back().getSize().y))
 		cursorAnimation.direction = ForwardReverse;
 		cursorAnimation.toStart();
 		clickedTimes++;
+	}
+
+	TextState TextArea_::snapshot()
+	{
+		TextState state;
+		state.text = text();
+		state.selectionStart = selectionStart;
+		state.selectionEnd = selectionEnd;
+		return state;
 	}
 
 	TextArea createTextArea(Widget& owner, unsigned long aId) {

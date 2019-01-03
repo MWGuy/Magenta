@@ -25,6 +25,20 @@ namespace Magenta
 
 	typedef size_t FontSize;
 
+	struct Glyph {
+		double x, y;
+		size_t index;
+
+		Glyph(double aX, double aY, size_t aIndex);
+		Glyph();
+	};
+
+	struct TextState {
+		std::string text;
+		Glyph selectionStart;
+		Glyph selectionEnd;
+	};
+
 	class TextArea_ : public Widget {
 		sf::Font* font;
 		sf::Text gtext;
@@ -36,13 +50,6 @@ namespace Magenta
 		std::vector<sf::RectangleShape> selectionBoxes;
 		void computeSelectionVisual();
 
-		struct Glyph {
-			double x, y;
-			size_t index;
-
-			Glyph(double aX, double aY, size_t aIndex);
-			Glyph();
-		};
 		Glyph selectionStart;
 		Glyph selectionEnd;
 
@@ -87,8 +94,10 @@ namespace Magenta
 
 		void clicked();
 
-		std::vector<std::string> toUndo;
-		std::vector<std::string> toRedo;
+		TextState snapshot();
+
+		std::vector<TextState> toUndo;
+		std::vector<TextState> toRedo;
 
 		unsigned int clickedTimes = 0;
 		bool shift = false;
