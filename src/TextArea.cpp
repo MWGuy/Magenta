@@ -190,27 +190,51 @@ selectionBoxes.back().getSize().y))
 
 	void TextArea_keydown(Widget& self, KeyCode key)
 	{
+		TextArea ta = (TextArea)self;
 		if (key == Key_Shift || key == Key_LeftShift || key == Key_RightShift) {
-			TextArea ta = (TextArea)self;
 			ta.shift = true;
+			return;
+		}
+		if (key == Key_Control || key == Key_LeftControl || key == Key_RightControl) {
+			ta.ctrl = true;
+			return;
+		}
+
+		if (ta.ctrl)
+		{
+			switch (key)
+			{
+			case Key_Z:
+				ta.undo();
+				break;
+			case Key_Y:
+				ta.redo();
+				break;
+			case Key_A:
+				ta.selectAll();
+				break;
+			}
 			return;
 		}
 
 		char character = keyCodeToCharacter(key, self.layout()->getWindow());
-		TextArea ta = (TextArea)self;
 		ta.clicked();
 
 		switch (key)
 		{
 		case Key_Back:
+			ta.toUndo.push_back(ta.text());
 			{
 				std::string str = ta.text();
 				ta.setText(str.substr(0, str.size() - 1));
 			}
+			ta.toRedo.clear();
 			return;
 			break;
 		case Key_Enter:
+			ta.toUndo.push_back(ta.text());
 			ta.setText(ta.text() + LineEnd);
+			ta.toRedo.clear();
 			return;
 			break;
 		case Key_Right:
@@ -282,7 +306,12 @@ selectionBoxes.back().getSize().y))
 			if (ta.selectionEnd.index == 0)
 				return;
 
+			std::string reference = ta.text();
+
 			ta.selectionEnd.index--;
+			if (ta.selectionEnd.index >= reference.size())
+				ta.selectionEnd.index = reference.size() - 1;
+
 			if (ta.shift)
 			{
 				sf::Vector2f pos = ta.getSfText().findCharacterPos(ta.selectionEnd.index);
@@ -338,6 +367,8 @@ selectionBoxes.back().getSize().y))
 
 		if (character != NotCharacterKey)
 		{
+			ta.toUndo.push_back(ta.text());
+			ta.toRedo.clear();
 			if (!ta.shift)
 				character = tolower(character);
 			ta.setText(ta.text() + character);
@@ -348,6 +379,11 @@ selectionBoxes.back().getSize().y))
 		if (key == Key_Shift || key == Key_LeftShift || key == Key_RightShift) {
 			TextArea ta = (TextArea)self;
 			ta.shift = false;
+			return;
+		}
+		if (key == Key_Control || key == Key_LeftControl || key == Key_RightControl) {
+			TextArea ta = (TextArea)self;
+			ta.ctrl = false;
 			return;
 		}
 	}
@@ -427,6 +463,32 @@ selectionBoxes.back().getSize().y))
 		std::string str = gtext.getString();
 		selectionStart.index = str.size() - 1;
 		selectionEnd.index = selectionStart.index;
+	}
+
+	void TextArea_::selectAll()
+	{
+		sf::Vector2f pos = gtext.findCharacterPos(text().size());
+		select(CursorPoint(computedRect().left + 2, computedRect().top + 2), CursorPoint(pos.x, pos.y));
+	}
+
+	void TextArea_::undo()
+	{
+		if (toUndo.empty())
+			return;
+
+		toRedo.push_back(text());
+		setText(toUndo.back());
+		toUndo.pop_back();
+	}
+
+	void TextArea_::redo()
+	{
+		if (toRedo.empty())
+			return;
+
+		toUndo.push_back(text());
+		setText(toRedo.back());
+		toRedo.pop_back();
 	}
 
 	void TextArea_::setText(std::string string) {

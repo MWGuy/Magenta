@@ -67,6 +67,9 @@ namespace Magenta
 		void setMultiline(bool aMultiline);
 
 		void clearSelection();
+		void selectAll();
+		void undo();
+		void redo();
 
 		void setText(std::string string);
 		std::string text();
@@ -84,8 +87,12 @@ namespace Magenta
 
 		void clicked();
 
+		std::vector<std::string> toUndo;
+		std::vector<std::string> toRedo;
+
 		unsigned int clickedTimes = 0;
 		bool shift = false;
+		bool ctrl = false; // cmd on Mac
 	};
 	typedef TextArea_& TextArea;
 
