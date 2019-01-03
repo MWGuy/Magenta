@@ -73,6 +73,7 @@ namespace Magenta
 		bool isMultiline() const;
 		void setMultiline(bool aMultiline);
 
+		void erase(size_t index1, size_t index2);
 		void clearSelection();
 		void selectAll();
 		void undo();

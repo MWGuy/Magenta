@@ -223,10 +223,16 @@ selectionBoxes.back().getSize().y))
 		switch (key)
 		{
 		case Key_Back:
-			ta.toUndo.push_back(ta.snapshot());
 			{
-				std::string str = ta.text();
-				ta.setText(str.substr(0, str.size() - 1));
+				if (ta.isSelected())
+				{
+					ta.erase(ta.selectionStart.index, ta.selectionEnd.index);
+				} else
+				{
+					ta.toUndo.push_back(ta.snapshot());
+					std::string str = ta.text();
+					ta.setText(str.substr(0, str.size() - 1));
+				}
 			}
 			ta.toRedo.clear();
 			return;
@@ -456,6 +462,21 @@ selectionBoxes.back().getSize().y))
 	void TextArea_::setMultiline(bool aMultiline) {
 		multiline = aMultiline;
 		processText();
+	}
+
+	void TextArea_::erase(size_t index1, size_t index2)
+	{
+		toUndo.push_back(snapshot());
+		if (index1 > index2) {
+			size_t buff = index1;
+			index1 = index2;
+			index2 = buff;
+		}
+		std::string str = text();
+		str = str.erase(index1, index2 - index1);
+		setText(str);
+		sf::Vector2f pos = gtext.findCharacterPos(index1);
+		select(CursorPoint(pos.x, pos.y));
 	}
 
 	void TextArea_::clearSelection()
