@@ -51,7 +51,7 @@ namespace Magenta
 	TextArea_::Glyph TextArea_::getGlyph(CursorPoint point)
 	{
 		bool  isBold = gtext.getStyle() == sf::Text::Bold;
-		double lineSpacing = gtext.getLineSpacing() + gtext.getCharacterSize();
+		double lineSpacing = gtext.getLineSpacing()*2 + gtext.getCharacterSize();
 
 		double x, y;
 		x = computedRect().left;
@@ -121,7 +121,7 @@ selectionBoxes.back().getSize().y))
 		}
 
 		bool  isBold = gtext.getStyle() == sf::Text::Bold;
-		double lineSpacing = gtext.getLineSpacing() + gtext.getCharacterSize();
+		double lineSpacing = gtext.getLineSpacing()*2 + gtext.getCharacterSize();
 
 		double x, y;
 		x = start->x;
@@ -190,11 +190,165 @@ selectionBoxes.back().getSize().y))
 
 	void TextArea_keydown(Widget& self, KeyCode key)
 	{
+		if (key == Key_Shift || key == Key_LeftShift || key == Key_RightShift) {
+			TextArea ta = (TextArea)self;
+			ta.shift = true;
+			return;
+		}
+
 		char character = keyCodeToCharacter(key, self.layout()->getWindow());
+		TextArea ta = (TextArea)self;
+		ta.clicked();
+
+		switch (key)
+		{
+		case Key_Back:
+			{
+				std::string str = ta.text();
+				ta.setText(str.substr(0, str.size() - 1));
+			}
+			return;
+			break;
+		case Key_Enter:
+			ta.setText(ta.text() + LineEnd);
+			return;
+			break;
+		case Key_Right:
+			{
+				ta.selectionEnd.index++;
+				if (ta.shift)
+				{
+					sf::Vector2f pos = ta.getSfText().findCharacterPos(ta.selectionEnd.index);
+					ta.selectionEnd.x = pos.x;
+					ta.selectionEnd.y = pos.y;
+					ta.select(CursorPoint(ta.selectionStart.x, ta.selectionStart.y),
+						      CursorPoint(ta.selectionEnd.x, ta.selectionEnd.y)
+					);
+				} else
+				{
+					if (!ta.selectionBoxes.empty()) {
+						ta.selectionBoxes.clear();
+						ta.selectionEnd.index--;
+					}
+					ta.selectionStart.index = ta.selectionEnd.index;
+					sf::Vector2f pos = ta.getSfText().findCharacterPos(ta.selectionStart.index);
+					ta.selectionStart.x = pos.x;
+					ta.selectionStart.y = pos.y;
+					ta.selectionEnd.x = pos.x;
+					ta.selectionEnd.y = pos.y;
+				}
+			}
+			return;
+			break;
+		case Key_Top:
+		{
+			//check for first line
+			std::string reference = ta.text();
+			for (size_t i = ta.selectionEnd.index; i > 0; i--)
+			{
+				if (reference[i] == LineEnd)
+					goto not_first_line;
+			}
+			return;
+
+			not_first_line:
+
+			ta.selectionEnd.y -= ta.getSfText().getCharacterSize() + ta.getSfText().getLineSpacing()*2;
+			ta.selectionEnd = ta.getGlyph(CursorPoint(ta.selectionEnd.x, ta.selectionEnd.y));
+			if (ta.shift)
+			{
+				ta.select(CursorPoint(ta.selectionStart.x, ta.selectionStart.y),
+					CursorPoint(ta.selectionEnd.x, ta.selectionEnd.y)
+				);
+			}
+			else
+			{
+				if (!ta.selectionBoxes.empty()) {
+					ta.selectionBoxes.clear();
+					ta.selectionEnd.index--;
+				}
+				ta.selectionStart.index = ta.selectionEnd.index;
+				sf::Vector2f pos = ta.getSfText().findCharacterPos(ta.selectionStart.index);
+				ta.selectionStart.x = pos.x;
+				ta.selectionStart.y = pos.y;
+				ta.selectionEnd.x = pos.x;
+				ta.selectionEnd.y = pos.y;
+			}
+		}
+		return;
+		break;
+		case Key_Left:
+		{
+			if (ta.selectionEnd.index == 0)
+				return;
+
+			ta.selectionEnd.index--;
+			if (ta.shift)
+			{
+				sf::Vector2f pos = ta.getSfText().findCharacterPos(ta.selectionEnd.index);
+				ta.selectionEnd.x = pos.x;
+				ta.selectionEnd.y = pos.y;
+				ta.select(CursorPoint(ta.selectionStart.x, ta.selectionStart.y),
+					CursorPoint(ta.selectionEnd.x, ta.selectionEnd.y)
+				);
+			}
+			else
+			{
+				if (!ta.selectionBoxes.empty()) {
+					ta.selectionBoxes.clear();
+					ta.selectionEnd.index++;
+				}
+				ta.selectionStart.index = ta.selectionEnd.index;
+				sf::Vector2f pos = ta.getSfText().findCharacterPos(ta.selectionStart.index);
+				ta.selectionStart.x = pos.x;
+				ta.selectionStart.y = pos.y;
+				ta.selectionEnd.x = pos.x;
+				ta.selectionEnd.y = pos.y;
+			}
+		}
+		return;
+		break;
+		case Key_Bottom:
+		{
+			ta.selectionEnd.y += ta.getSfText().getCharacterSize() + ta.getSfText().getLineSpacing() * 2;
+			ta.selectionEnd = ta.getGlyph(CursorPoint(ta.selectionEnd.x, ta.selectionEnd.y));
+			if (ta.shift)
+			{
+				ta.select(CursorPoint(ta.selectionStart.x, ta.selectionStart.y),
+					CursorPoint(ta.selectionEnd.x, ta.selectionEnd.y)
+				);
+			}
+			else
+			{
+				if (!ta.selectionBoxes.empty()) {
+					ta.selectionBoxes.clear();
+					ta.selectionEnd.index++;
+				}
+				ta.selectionStart.index = ta.selectionEnd.index;
+				sf::Vector2f pos = ta.getSfText().findCharacterPos(ta.selectionStart.index);
+				ta.selectionStart.x = pos.x;
+				ta.selectionStart.y = pos.y;
+				ta.selectionEnd.x = pos.x;
+				ta.selectionEnd.y = pos.y;
+			}
+		}
+		return;
+		break;
+		}
+
 		if (character != NotCharacterKey)
 		{
-			TextArea ta = (TextArea)self;
+			if (!ta.shift)
+				character = tolower(character);
 			ta.setText(ta.text() + character);
+		}
+	}
+	void TextArea_keyup(Widget& self, KeyCode key)
+	{
+		if (key == Key_Shift || key == Key_LeftShift || key == Key_RightShift) {
+			TextArea ta = (TextArea)self;
+			ta.shift = false;
+			return;
 		}
 	}
 
@@ -215,6 +369,7 @@ selectionBoxes.back().getSize().y))
 		onmousedown.setWidgetSpecific(TextArea_mousedown);
 		onblur.setWidgetSpecific(TextArea_blur);
 		onkeydown.setWidgetSpecific(TextArea_keydown);
+		onkeyup.setWidgetSpecific(TextArea_keyup);
 
 		setCursor(Cursor(Cursor::IBeam));
 	}
@@ -281,8 +436,11 @@ selectionBoxes.back().getSize().y))
 
 	std::string TextArea_::text() {
 		std::string str = gtext.getString();
-		while (str[str.size() - 1] == LineEnd)
-			str = str.erase(str.size() - 1, 1);
+		if (!multiline)
+		{
+			while (str.find(LineEnd) != std::string::npos)
+				str = str.erase(str.find(LineEnd), 1);
+		}
 		return str;
 	}
 
@@ -323,6 +481,10 @@ selectionBoxes.back().getSize().y))
 	{
 		drawTextArea();
 		drawChilds();
+	}
+
+	sf::Text& TextArea_::getSfText() {
+		return gtext;
 	}
 
 	void TextArea_::clicked()

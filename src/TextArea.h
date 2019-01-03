@@ -46,11 +46,11 @@ namespace Magenta
 		Glyph selectionStart;
 		Glyph selectionEnd;
 
+		Glyph getGlyph(CursorPoint point);
+
 	protected:
 		double cursorOpacity;
 		ValueAnimation_ cursorAnimation;
-
-		Glyph getGlyph(CursorPoint point);
 		void initialize();
 
 	public:
@@ -80,9 +80,12 @@ namespace Magenta
 		void drawTextArea();
 		void draw() override;
 
+		sf::Text& getSfText();
+
 		void clicked();
 
 		unsigned int clickedTimes = 0;
+		bool shift = false;
 	};
 	typedef TextArea_& TextArea;
 

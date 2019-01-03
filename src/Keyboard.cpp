@@ -165,6 +165,8 @@ namespace Magenta
 		case Key_OEM_Comma: return 0xBC; break;
 		case Key_OEM_Period: return 0xBE; break;
 		case Key_OEM_Plus: return 0xBB; break;
+		case Key_Space: return 0x20; break;
+		case Key_Enter: return 0x0D; break;
 		}
 	}
 #endif
@@ -174,7 +176,7 @@ namespace Magenta
 #ifdef _WIN32
 		unsigned int code = characterToWin32(keyCode);
 		HKL hKl = GetKeyboardLayout(GetWindowThreadProcessId(window->handler(), 0));
-		return code == 0 ? 0 : MapVirtualKeyEx(characterToWin32(keyCode), MAPVK_VK_TO_CHAR, hKl);
+		return code == 0 ? 0 : MapVirtualKeyExW(characterToWin32(keyCode), MAPVK_VK_TO_CHAR, hKl);
 #else
 		return 0;
 #endif

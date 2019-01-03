@@ -63,6 +63,36 @@ namespace Magenta
 	{
 	}
 
+	void KeyboardInputEventHandler::operator+=(KeyboardInputEventCallback callback)
+	{
+		sequence.push_back(callback);
+	}
+	void KeyboardInputEventHandler::operator=(KeyboardInputEventCallback callback)
+	{
+		sequence.clear();
+		sequence.push_back(callback);
+	}
+
+	void KeyboardInputEventHandler::setWidgetSpecific(KeyboardInputEventCallback callback) {
+		widgetSpecificCallbacks.push_back(callback);
+	}
+
+	Widget& KeyboardInputEventHandler::assignedWidget() {
+		return *mAssignedWidget;
+	}
+
+	void KeyboardInputEventHandler::dispatch(char character) {
+		for (size_t i = 0; i < widgetSpecificCallbacks.size(); i++)
+			widgetSpecificCallbacks[i](*mAssignedWidget, character);
+
+		for (size_t i = 0; i < sequence.size(); i++)
+			sequence[i](*mAssignedWidget, character);
+	}
+
+	KeyboardInputEventHandler::KeyboardInputEventHandler(Widget* assignedTo) : mAssignedWidget(assignedTo)
+	{
+	}
+
 	void WindowEventHandler::operator+=(WindowEventCallback callback) {
 		sequence.push_back(callback);
 	}

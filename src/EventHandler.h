@@ -47,6 +47,23 @@ namespace Magenta
 		KeyboardEventHandler(Widget* assignedTo);
 	};
 
+	typedef void(*KeyboardInputEventCallback)(Widget& self, char character);
+
+	class KeyboardInputEventHandler {
+		std::vector<KeyboardInputEventCallback> widgetSpecificCallbacks;
+		std::vector<KeyboardInputEventCallback> sequence;
+		Widget* mAssignedWidget;
+	public:
+		void operator+=(KeyboardInputEventCallback callback);
+		void operator=(KeyboardInputEventCallback callback);
+		void setWidgetSpecific(KeyboardInputEventCallback callback);
+		Widget& assignedWidget();
+
+		void dispatch(char character);
+
+		KeyboardInputEventHandler(Widget* assignedTo);
+	};
+
 	typedef void(*WindowEventCallback)(Window& self);
 
 	class WindowEventHandler {
