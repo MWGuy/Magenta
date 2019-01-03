@@ -386,12 +386,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 			SetCursor(LoadCursor(NULL, IDC_SIZENS));
 			winTransforming = SizingBottom;
 		}
-		else {
+		else if(winTransforming != Idle) {
 			SetCursor(LoadCursor(NULL, IDC_ARROW));
 			winTransforming = Idle;
 		}
-
-		return 0;
+		return TRUE;
 		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
@@ -463,6 +462,7 @@ LRESULT CALLBACK InnProc(HWND hWnd, UINT message,
 
 		offsetX = LOWORD(lParam) + 4;
 		offsetY = HIWORD(lParam) + 4;
+		return TRUE;
 		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);

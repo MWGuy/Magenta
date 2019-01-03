@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Window.h"
-
 namespace Magenta
 {
+	class Window;
+
 	enum KeyCode {
 		Key_LeftButton,
 		Key_RightButton,
@@ -87,6 +87,19 @@ namespace Magenta
 		Key_RightControl,
 		Key_LeftAlt,
 		Key_RightAlt,
+		Key_OEM_1,
+		Key_OEM_102,
+		Key_OEM_2,
+		Key_OEM_3,
+		Key_OEM_4,
+		Key_OEM_5,
+		Key_OEM_6,
+		Key_OEM_7,
+		Key_OEM_8,
+		Key_OEM_Minus,
+		Key_OEM_Comma,
+		Key_OEM_Period,
+		Key_OEM_Plus,
 		Key_Undefined
 	};
 

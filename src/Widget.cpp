@@ -4,6 +4,97 @@
 
 namespace Magenta
 {
+	Cursor::Cursor(Variant aVariant, bool aVisible, std::string aSpecified)
+		:variant(aVariant), visible(aVisible), specified(aSpecified),
+		offsetX(0), offsetY(0)
+	{
+	}
+
+	void Widget::useCursor()
+	{
+		sf::Cursor cursor;
+		sf::Image img;
+		switch (mCursor.variant)
+		{
+		case Cursor::Default:
+			cursor.loadFromSystem(sf::Cursor::Arrow);
+			layout()->view.setMouseCursor(cursor);
+			break;
+		case Cursor::Cross:
+			cursor.loadFromSystem(sf::Cursor::Cross);
+			layout()->view.setMouseCursor(cursor);
+			break;
+		case Cursor::Hand:
+			cursor.loadFromSystem(sf::Cursor::Hand);
+			layout()->view.setMouseCursor(cursor);
+			break;
+		case Cursor::IBeam:
+			cursor.loadFromSystem(sf::Cursor::Text);
+			layout()->view.setMouseCursor(cursor);
+			break;
+		case Cursor::Busy:
+			cursor.loadFromSystem(sf::Cursor::Wait);
+			layout()->view.setMouseCursor(cursor);
+			break;
+		case Cursor::Wait:
+			cursor.loadFromSystem(sf::Cursor::ArrowWait);
+			layout()->view.setMouseCursor(cursor);
+			break;
+		case Cursor::NotAllowed:
+			cursor.loadFromSystem(sf::Cursor::NotAllowed);
+			layout()->view.setMouseCursor(cursor);
+			break;
+		case Cursor::Help:
+			cursor.loadFromSystem(sf::Cursor::Help);
+			layout()->view.setMouseCursor(cursor);
+			break;
+		case Cursor::Size:
+			cursor.loadFromSystem(sf::Cursor::SizeAll);
+			layout()->view.setMouseCursor(cursor);
+			break;
+		case Cursor::SizeAll:
+			cursor.loadFromSystem(sf::Cursor::SizeAll);
+			layout()->view.setMouseCursor(cursor);
+			break;
+		case Cursor::SizeNeSw:
+			cursor.loadFromSystem(sf::Cursor::SizeBottomLeftTopRight);
+			layout()->view.setMouseCursor(cursor);
+			break;
+			break;
+		case Cursor::SizeNs:
+			cursor.loadFromSystem(sf::Cursor::SizeVertical);
+			layout()->view.setMouseCursor(cursor);
+			break;
+		case Cursor::SizeNwSe:
+			cursor.loadFromSystem(sf::Cursor::SizeTopLeftBottomRight);
+			layout()->view.setMouseCursor(cursor);
+			break;
+		case Cursor::SizeWe:
+			cursor.loadFromSystem(sf::Cursor::SizeHorizontal);
+			layout()->view.setMouseCursor(cursor);
+			break;
+		case Cursor::UpArrow:
+			cursor.loadFromSystem(sf::Cursor::Arrow);
+			layout()->view.setMouseCursor(cursor);
+			break;
+		case Cursor::Specified:
+			img.loadFromFile(mCursor.specified);
+			if (cursor.loadFromPixels(img.getPixelsPtr(), img.getSize(), sf::Vector2u(mCursor.offsetX, mCursor.offsetY)))
+				layout()->view.setMouseCursor(cursor);
+			break;
+		}
+		layout()->view.setMouseCursorVisible(mCursor.visible);
+	}
+
+	Cursor Widget::cursor() const {
+		return mCursor;
+	}
+	void Widget::setCursor(Cursor cur) {
+		mCursor = cur;
+		if (layout()->mousedownWidget == this)
+			useCursor();
+	}
+
 	sf::RenderWindow& Widget::canvas() {
 		return layout()->view;
 	}
@@ -178,7 +269,8 @@ namespace Magenta
 	}
 
 	Widget::Widget(Layout* aLayout, Widget* aParent, unsigned long aId)
-		: pLayout(aLayout), pParent(aParent), mComputedRect(), visible(true), focusPolicy(AutoFocus),
+		: pLayout(aLayout), pParent(aParent), mComputedRect(),
+		visible(true), focusPolicy(AutoFocus),
 		id(aId), position(TopLeft), height$(0), width$(0), x(0), y(0), zIndex(0), width(0), height(0),
 
 		onclick(this),

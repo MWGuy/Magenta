@@ -90,6 +90,10 @@ namespace Magenta
 	}
 
 #ifdef _WIN32
+	HWND Window::mainWindowHandler() {
+		return hWnd;
+	}
+
 	HWND Window::handler() {
 		return hInner;
 	}

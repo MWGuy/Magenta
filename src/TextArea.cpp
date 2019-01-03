@@ -215,6 +215,8 @@ selectionBoxes.back().getSize().y))
 		onmousedown.setWidgetSpecific(TextArea_mousedown);
 		onblur.setWidgetSpecific(TextArea_blur);
 		onkeydown.setWidgetSpecific(TextArea_keydown);
+
+		setCursor(Cursor(Cursor::IBeam));
 	}
 
 	TextArea_::TextArea_(Layout* aLayout, Widget* aParent, unsigned long aId, FontSize aFontSize, FontColor aColor,

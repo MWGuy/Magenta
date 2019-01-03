@@ -1,4 +1,5 @@
 #include "Keyboard.h"
+#include "Window.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -93,6 +94,19 @@ namespace Magenta
 		case 0xA3: return Key_RightControl; break;
 		case 0xA4: return Key_LeftAlt; break;
 		case 0xA5: return Key_RightAlt; break;
+		case 0xBA: return Key_OEM_1; break;
+		case 0xE2: return Key_OEM_102; break;
+		case 0xBF: return Key_OEM_2; break;
+		case 0xC0: return Key_OEM_3; break;
+		case 0xDB: return Key_OEM_4; break;
+		case 0xDC: return Key_OEM_5; break;
+		case 0xDD: return Key_OEM_6; break;
+		case 0xDE: return Key_OEM_7; break;
+		case 0xDF: return Key_OEM_8; break;
+		case 0xBD: return Key_OEM_Minus; break;
+		case 0xBC: return Key_OEM_Comma; break;
+		case 0xBE: return Key_OEM_Period; break;
+		case 0xBB: return Key_OEM_Plus; break;
 		}
 	}
 
@@ -138,6 +152,19 @@ namespace Magenta
 		case Key_X: return 0x58; break;
 		case Key_Y: return 0x59; break;
 		case Key_Z: return 0x5A; break;
+		case Key_OEM_1: return 0xBA; break;
+		case Key_OEM_102: return 0xE2; break;
+		case Key_OEM_2: return 0xBF; break;
+		case Key_OEM_3: return 0xC0; break;
+		case Key_OEM_4: return 0xDB; break;
+		case Key_OEM_5: return 0xDC; break;
+		case Key_OEM_6: return 0xDD; break;
+		case Key_OEM_7: return 0xDE; break;
+		case Key_OEM_8: return 0xDF; break;
+		case Key_OEM_Minus: return 0xBD; break;
+		case Key_OEM_Comma: return 0xBC; break;
+		case Key_OEM_Period: return 0xBE; break;
+		case Key_OEM_Plus: return 0xBB; break;
 		}
 	}
 #endif

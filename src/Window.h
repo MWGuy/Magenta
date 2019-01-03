@@ -59,6 +59,7 @@ namespace Magenta
 		void setTransform(WindowTransform state);
 
 #ifdef _WIN32
+		HWND mainWindowHandler();
 		HWND handler();
 
 		Window(HWND i, HWND h, void(*form)(Widget& view), WindowTransform* wtransform = 0);

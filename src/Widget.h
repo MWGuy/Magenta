@@ -31,11 +31,41 @@ namespace Magenta
 		AlwaysFocus
 	};
 
+	struct Cursor
+	{
+		enum Variant
+		{
+			Default,
+			Cross,
+			Hand,
+			IBeam,
+			Busy,
+			Wait,
+			NotAllowed,
+			Help,
+			Size,
+			SizeAll,
+			SizeNeSw,
+			SizeNs,
+			SizeNwSe,
+			SizeWe,
+			UpArrow,
+			Specified
+		};
+		Variant variant;
+		bool visible;
+		std::string specified;
+		unsigned int offsetX, offsetY;
+		Cursor(Variant aVariant = Default, bool aVisible = true, std::string aSpecified = "");
+	};
+	
 	class Widget {
 		Layout* pLayout;
 		Widget* pParent;
 		Rect mComputedRect;
+		Cursor mCursor;
 	public:
+		void useCursor();
 
 		sf::RenderWindow& canvas();
 		void update();
@@ -94,6 +124,9 @@ namespace Magenta
 		double x, y, width, height;
 
 		long zIndex;
+
+		Cursor cursor() const;
+		void setCursor(Cursor cur);
 
 		std::vector<Widget*> childs;
 

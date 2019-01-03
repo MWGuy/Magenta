@@ -165,11 +165,13 @@ namespace Magenta
 
 				mousemoveWidget = target;
 
+				mousemoveWidget->useCursor();
 				mousemoveWidget->onmouseenter.dispatch();
 			}
 		} else {
 			mousemoveWidget = target;
 
+			mousemoveWidget->useCursor();
 			mousemoveWidget->onmouseenter.dispatch();
 		}
 

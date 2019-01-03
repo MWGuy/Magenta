@@ -182,9 +182,9 @@ namespace MagentaForm
 		address.position = CenterLeft;
 		address.width$ = 100;
 		address.width -= 92;
-		address.height = 14;
+		address.height = 13;
 		address.x = 32;
-		address.y = -1;
+		address.y = -2;
 		address.setText("www.yandex.ru/search");
 
 		TextArea text = createTextArea(view);
